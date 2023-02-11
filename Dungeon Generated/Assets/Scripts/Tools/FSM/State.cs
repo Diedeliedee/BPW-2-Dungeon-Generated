@@ -7,7 +7,7 @@ namespace Dodelie.Tools
     /// <summary>
     /// Abstract base for a state within a state machine.
     /// </summary>
-    public abstract class State<Root> where Root : Object
+    public abstract class State<Root> : ScriptableObject where Root : Object
     {
         /// <summary>
         /// The state machine this state is a part of.

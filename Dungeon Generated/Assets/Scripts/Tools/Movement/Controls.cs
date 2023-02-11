@@ -3,7 +3,7 @@
 namespace Dodelie.Tools
 {
     /// <summary>
-    /// Abstract class having minimal amount of necessary references to possible input.
+    /// Class having minimal amount of necessary references to possible input.
     /// </summary>
     public class Controls
     {
