@@ -4,19 +4,25 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public Room[] rooms = new Room[1];
-    public Room activeRoom = null;
-    public Player player = null;
+    public Room[] rooms     = new Room[1];
+    public Room activeRoom  = null;
+    public Player player    = null;
+    public DungeonGenerator generator = null;
 
     private void Start()
     {
-        //activeRoom = rooms[0];
         player.Initialize();
+        activeRoom = rooms[0];
     }
 
     private void Update()
     {
-        //activeRoom.Tick(Time.deltaTime);
         player.Tick(Time.deltaTime);
+        activeRoom.Tick(Time.deltaTime);
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        generator.DrawGizmos();
     }
 }

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8afafb70b3dc7c8468beb8128b402836, type: 3}
   m_Name: Player Walk
   m_EditorClassIdentifier: 
-  m_walkSpeed: 3
-  m_walkGrip: 1
-  m_rotationSpeed: 1
-  m_rotationGrip: 1
+  m_walkSpeed: 2
+  m_walkGrip: 18.75
+  m_rotationSpeed: 120
+  m_rotationGrip: 18.75
