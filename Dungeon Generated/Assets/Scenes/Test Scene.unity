@@ -410,10 +410,10 @@ MonoBehaviour:
   activeRoom: {fileID: 0}
   player: {fileID: 1988835172}
   generator:
-    mapSize: 10
+    mapSize: 15
     minRoomScale: {x: 3, y: 3}
-    maxRoomScale: {x: 5, y: 5}
-    roomCount: 10
+    maxRoomScale: {x: 8, y: 8}
+    roomCount: 100
 --- !u!4 &450168610
 Transform:
   m_ObjectHideFlags: 0
