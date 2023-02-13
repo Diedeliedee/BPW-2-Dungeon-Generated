@@ -13,27 +13,53 @@ public class DungeonGenerator
     public Vector2Int maxRoomScale = new Vector2Int(5, 5);
     public int roomCount = 10;
 
-
-
     private Room[] SpawnRooms()
     {
-        var rooms = new Room[roomCount];
+        var unsortedRooms = new List<Room>();
+        var sortedRooms = new List<Room>();
+
+        Room Furthest(List<Room> roomList)
+        {
+            Room furthest = null;
+            float distance = 0f;
+
+            foreach (var room in roomList)
+            {
+                var roomDistance = room.position.sqrMagnitude;
+
+                if (roomDistance <= distance) continue;
+                furthest = room;
+                distance = roomDistance;
+            }
+            roomList.Remove(furthest);
+            return furthest;
+        }
 
         for (int i = 0; i < roomCount; i++)
         {
+            //  Initializing rooms in a tight circle.
             var randomCirclePosition = Calc.RandomCirclePoint(mapSize);
             var position = new Vector2Int(Mathf.RoundToInt(randomCirclePosition.x), Mathf.RoundToInt(randomCirclePosition.y));
             var scale = new Vector2Int(Random.Range(minRoomScale.x, maxRoomScale.x + 1), Random.Range(minRoomScale.x, maxRoomScale.y + 1));
 
-            rooms[i] = new Room(position, scale);
+            unsortedRooms.Add(new Room(position, scale));
         }
-        return rooms;
+        while (unsortedRooms.Count > 0)
+        {
+            sortedRooms.Add(Furthest(unsortedRooms));
+        }
+        foreach (var item in sortedRooms)
+        {
+
+        }
     }
 
     public void DrawGizmos()
     {
         foreach (var room in SpawnRooms())
         {
+
+
             GizmoTools.DrawOutlinedBox(Calc.FlatToVector(room.position), Calc.FlatToVector(room.size), Color.white, 1f, true, 0.25f);
         }
         GizmoTools.DrawCircle(Vector3.zero, mapSize, Color.red, 0.75f);
@@ -41,10 +67,10 @@ public class DungeonGenerator
 
     private class Room
     {
-        public readonly Tile[] tiles    = null;
+        public readonly Tile[] tiles = null;
 
-        public Vector2Int position      = Vector2Int.zero;
-        public Vector2Int size          = Vector2Int.zero;
+        public Vector2Int position = Vector2Int.zero;
+        public Vector2Int size = Vector2Int.zero;
 
         public Room(Vector2Int position, Vector2Int size)
         {
