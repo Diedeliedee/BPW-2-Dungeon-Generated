@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using Joeri.Tools.Utilities;
 
 [System.Serializable]
 public class DungeonGenerator
@@ -30,21 +31,57 @@ public class DungeonGenerator
     public void Iterate(List<Room> rooms)
     {
         var room = rooms[roomIteration];
+        var collidingRooms = new List<Room>();
 
-        int GetShiftOnAxis(int axisPos, int otherAxisPos)
+        void CheckForOverlap(Room anchor)
         {
-            if (axisPos == otherAxisPos) return Random.Range(0f, 1f) > 0.5f ? 1 : -1;
-            return Mathf.Clamp(axisPos - otherAxisPos, -1, 1);
+            //  Iterate through all other rooms, and cache the ones colliding with the current room.
+            foreach (var other in rooms)
+            {
+                if (other == anchor) continue;                              //  Skip collision with itself.
+                if (!anchor.bounds.CollidesWith(other.bounds)) continue;    //  Continue if no collision is found.
+                IterateOverlap(anchor, other);
+            }
         }
 
-        foreach (var other in rooms)
+        void IterateOverlap(Room anchor, Room other)
         {
-            if (other == room) continue;                                                            //  Skip collision with itself.
-            if (!room.bounds.CollidesWith(other.bounds, out bool xCol, out bool yCol)) continue;    //  Continue if no collision is found.
+            var offset = other.position - anchor.position;
 
-            if (xCol) room.bounds.position.x += GetShiftOnAxis(room.position.x, other.position.x);
-            if (yCol) room.bounds.position.y += GetShiftOnAxis(room.position.y, other.position.y);
+            //  If the rooms are in the exact same spot, create a random direction to move it towards, otherwise, clamp the offset.
+            if (offset == Vector2Int.zero)
+            {
+                var randX = Random.Range(-1, 1);
+                var randY = Random.Range(-1, 1);
+
+                //  In the case that both values are still zero, assign a random direction to either.
+                if (randX == 0 & randY == 0)
+                {
+                    if (Util.RandomChance(0.5f))    randX = Util.RandomChance(0.5f) ? 1 : -1;
+                    else                            randY = Util.RandomChance(0.5f) ? 1 : -1;
+                }
+
+                offset = new Vector2Int(randX, randY);
+            }
+            else
+            {
+                offset.x = Mathf.Clamp(offset.x, -1, 1);
+                offset.y = Mathf.Clamp(offset.y, -1, 1);
+            }
+
+            //  Assign offset to other room's position.
+            other.position += offset;
+
+            //  If there is still collision between the other room and the anchor, iterate again.
+            if (anchor.bounds.CollidesWith(other.bounds)) IterateOverlap(anchor, other);
+
+            //  Check if the moved room has any new overlaps to be fixed.
+            CheckForOverlap(other);
+
         }
+
+        //  Iterate the current designated room.
+        CheckForOverlap(room);
         if (++roomIteration >= rooms.Count) roomIteration = 0;
     }
 }

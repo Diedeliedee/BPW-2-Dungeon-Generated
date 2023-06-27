@@ -65,6 +65,13 @@ namespace Joeri.Tools.Utilities
             if (array == null || array.Length == 0) return true;
             return false;
         }
+
+        /// <returns>The result of a random number lower than, or equal to the given probability value.</returns>
+        public static bool RandomChance(float probability)
+        {
+            probability = Mathf.Clamp01(probability);
+            return (Random.Range(0f, 1f) <= probability);
+        }
     }
 }
 

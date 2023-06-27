@@ -59,8 +59,8 @@ namespace Joeri.Tools
             var otherTopLeft        = other.topLeft;
             var otherBottomRight    = other.bottomRight;
 
-            xCol = bottomRight.x >= otherTopLeft.x && topLeft.x <= otherBottomRight.x;
-            yCol = bottomRight.y >= otherTopLeft.y && topLeft.y <= otherBottomRight.y;
+            xCol = bottomRight.x > otherTopLeft.x && topLeft.x < otherBottomRight.x;
+            yCol = bottomRight.y > otherTopLeft.y && topLeft.y < otherBottomRight.y;
 
             return xCol && yCol;
         }
