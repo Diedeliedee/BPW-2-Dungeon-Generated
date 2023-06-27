@@ -6,7 +6,7 @@ using Joeri.Tools.Debugging;
 namespace Joeri.Tools
 {
     [System.Serializable]
-    public struct BoxArea
+    public struct Box
     {
         public Vector3 position;
         public Vector3 size;
@@ -18,7 +18,7 @@ namespace Joeri.Tools
         public float backBorder     { get => position.z + (size.z / 2); }
         public float frontBorder    { get => position.z - (size.z / 2); }
 
-        public BoxArea(Vector3 position, Vector3 size)
+        public Box(Vector3 position, Vector3 size)
         {
             this.position   = position;
             this.size       = size;
