@@ -30,9 +30,6 @@ public class DungeonGenerator
 
     public void Iterate(List<Room> rooms)
     {
-        var room = rooms[roomIteration];
-        var collidingRooms = new List<Room>();
-
         void CheckForOverlap(Room anchor)
         {
             //  Iterate through all other rooms, and cache the ones colliding with the current room.
@@ -81,7 +78,6 @@ public class DungeonGenerator
         }
 
         //  Iterate the current designated room.
-        CheckForOverlap(room);
-        if (++roomIteration >= rooms.Count) roomIteration = 0;
+        CheckForOverlap(rooms[0]);
     }
 }
