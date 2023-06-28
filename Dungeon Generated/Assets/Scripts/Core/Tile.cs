@@ -8,21 +8,27 @@ using Joeri.Tools.Debugging;
 
 public class Tile
 {
-    public Vector2Int coordinates;
+    public readonly Room parent = null;
+    public readonly Vector2Int localCoordinates;
+
+    public Vector2Int coordinates
+    {
+        get => localCoordinates + parent.position;
+    }
 
     public Vector2 position
     {
         get => new Vector2(coordinates.x + 0.5f, coordinates.y + 0.5f);
-        set => coordinates = new Vector2Int(Mathf.FloorToInt(value.x), Mathf.FloorToInt(value.y));
     }
 
-    public Tile(Vector2Int coords)
+    public Tile(Room parent, Vector2Int coords)
     {
-        coordinates = coords;
+        this.parent         = parent;
+        localCoordinates    = coords;
     }
 
-    public void Draw()
+    public void Draw(Color color, float opacity, bool solid = false, float solidOpactiyMultiplier = 0.5f)
     {
-        GizmoTools.DrawOutlinedBox(position, Vector2.one, Color.green, 0.5f, true);
+        GizmoTools.DrawOutlinedBox(position, Vector2.one, color, opacity, solid, solidOpactiyMultiplier);
     }
 }

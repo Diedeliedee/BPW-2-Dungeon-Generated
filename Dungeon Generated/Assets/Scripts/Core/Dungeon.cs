@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using Joeri.Tools;
+using Joeri.Tools.Structure;
 using Joeri.Tools.Debugging;
 
-public class Dungeon : MonoBehaviour
+public class Dungeon : Singleton<Dungeon>
 {
     public int halfExtents = 10;
     [Space]
@@ -17,41 +18,29 @@ public class Dungeon : MonoBehaviour
     [SerializeField] private DungeonGenerator m_generator;
     [SerializeField] private DungeonDresser m_dresser;
 
+    [Header("Debug:")]
+    [SerializeField] Room.DrawStyle m_roomsDrawSyle = Room.DrawStyle.Entire;
+
     //  References:
     private Tilemap m_tileMap = null;
 
     private void Awake()
     {
+        instance = this;
+
         m_tileMap = GetComponent<Tilemap>();
     }
 
     private void Start()
     {
-        rooms = m_generator.GetRawRooms();
+        rooms = m_generator.Generate();
         m_dresser.Dress(this);
-    }
-
-    private void Update()
-    {
-        //m_generator.Iterate(rooms);
     }
 
     private void OnDrawGizmos()
     {
-        if (Application.isPlaying) Draw();
-        else
-        {
-            var rooms = m_generator.GetRawRooms();
-
-            void DrawTile(Vector2Int coords)
-            {
-                if (!HasTile(coords, rooms)) return;
-                GizmoTools.DrawOutlinedBox(new Vector3(coords.x + 0.5f, coords.y + 0.5f), Vector2.one, Color.red, 0.5f, true);
-            }
-
-            Draw(rooms);
-            LoopTiles(DrawTile);
-        }
+        if (Application.isPlaying)  Draw();
+        else                        Draw(m_generator.GetRawRooms());
         GizmoTools.DrawOutlinedBox(Vector3.zero, new Vector2(halfExtents * 2, halfExtents * 2), Color.red);
     }
 
@@ -80,15 +69,24 @@ public class Dungeon : MonoBehaviour
         }
     }
 
-    public void Draw()
+    public static Vector2Int PosToCoords(Vector2 pos)
     {
-
-        if (rooms == null) return;
-        for (int i = 0; i < rooms.Count; i++) rooms[i].Draw();
+        return new Vector2Int(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.y));
     }
 
-    public static void Draw(List<Room> rooms)
+    public static Vector2 CoordsToPos(Vector2Int coords)
     {
-        for (int i = 0; i < rooms.Count; i++) rooms[i].Draw();
+        return new Vector2(coords.x + 0.5f, coords.y + 0.5f);
+    }
+
+    public void Draw()
+    {
+        if (rooms == null) return;
+        for (int i = 0; i < rooms.Count; i++) rooms[i].Draw(m_roomsDrawSyle);
+    }
+
+    public void Draw(List<Room> rooms)
+    {
+        for (int i = 0; i < rooms.Count; i++) rooms[i].Draw(m_roomsDrawSyle);
     }
 }

@@ -28,7 +28,12 @@ public class DungeonGenerator
         return rooms;
     }
 
-    public void Iterate(List<Room> rooms)
+    public List<Room> Generate()
+    {
+        return Iterate(GetRawRooms());
+    }
+
+    public List<Room> Iterate(List<Room> rooms)
     {
         void CheckForOverlap(Room anchor)
         {
@@ -79,5 +84,8 @@ public class DungeonGenerator
 
         //  Iterate the current designated room.
         CheckForOverlap(rooms[0]);
+
+        //  Return rooms for convenience.
+        return rooms;
     }
 }

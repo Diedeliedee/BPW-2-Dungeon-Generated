@@ -39,7 +39,7 @@ public class Room
     {
         void SetTile(Vector2Int coords)
         {
-            tiles.Add(coords, new Tile(coords));
+            tiles.Add(coords, new FloorTile(this, coords));
         }
 
         bounds = new Rectangle(pos, w, h);
@@ -54,7 +54,7 @@ public class Room
 
     public bool HasTile(Vector2Int coords, out Tile tile)
     {
-        return tiles.TryGetValue(coords, out tile);
+        return tiles.TryGetValue(coords - position, out tile);
     }
 
     public void LoopRoom(System.Action<Vector2Int> onIterate)
@@ -68,8 +68,26 @@ public class Room
         }
     }
 
-    public void Draw()
+    public void Draw(DrawStyle style)
     {
-        GizmoTools.DrawOutlinedBox(new Vector3(position.x, position.y), new Vector3(width, height), Color.white, 1f, true, 0.25f);
+        var color = Color.white;
+        var opacity = 0.5f;
+        var solid = true;
+        var solidOpacity = 0.25f;
+
+        switch (style)
+        {
+            default: return;
+
+            case DrawStyle.Entire:
+                GizmoTools.DrawOutlinedBox(new Vector3(position.x, position.y), new Vector3(width, height), color, opacity, solid, solidOpacity);
+                break;
+
+            case DrawStyle.Tiles:
+                foreach (var tile in tiles) tile.Value.Draw(color, opacity, solid, solidOpacity);
+                break;
+        }
     }
+
+    public enum DrawStyle { None, Entire, Tiles }
 }
