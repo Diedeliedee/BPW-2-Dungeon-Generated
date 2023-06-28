@@ -15,15 +15,15 @@ namespace Joeri.Tools
 
         #region Properties
 
-        public Vector2 top          { get => GetOffset(-1, 0); }
-        public Vector2 down         { get => GetOffset(1, 0); }
-        public Vector2 left         { get => GetOffset(0, -1); }
-        public Vector2 right        { get => GetOffset(0, 1); }
+        public Vector2 top          { get => GetOffset(0, 1); }
+        public Vector2 down         { get => GetOffset(0, -1); }
+        public Vector2 left         { get => GetOffset(-1, 0); }
+        public Vector2 right        { get => GetOffset(1, 0); }
 
-        public Vector2 topLeft      { get => GetOffset(-1, -1); }
-        public Vector2 topRight     { get => GetOffset(1, -1); }
-        public Vector2 bottomLeft   { get => GetOffset(-1, 1); }
-        public Vector2 bottomRight  { get => GetOffset(1, 1); }
+        public Vector2 topLeft      { get => GetOffset(-1, 1); }
+        public Vector2 topRight     { get => GetOffset(1, 1); }
+        public Vector2 bottomLeft   { get => GetOffset(-1, -1); }
+        public Vector2 bottomRight  { get => GetOffset(1, -1); }
 
         #endregion
 
@@ -51,16 +51,32 @@ namespace Joeri.Tools
             return CollidesWith(other, out bool xCol, out bool yCol);
         }
 
+        public bool CollidesWith(Vector2 point)
+        {
+            return CollidesWith(point, out bool xCol, out bool yCol);
+        }
+
         public bool CollidesWith(Rectangle other, out bool xCol, out bool yCol)
         {
-            var topLeft             = this.topLeft;
-            var bottomRight         = this.bottomRight;
+            var bottomLeft      = this.bottomLeft;
+            var topRight        = this.topRight;
 
-            var otherTopLeft        = other.topLeft;
-            var otherBottomRight    = other.bottomRight;
+            var otherBottomLeft = other.bottomLeft;
+            var otherTopRight   = other.topRight;
 
-            xCol = bottomRight.x > otherTopLeft.x && topLeft.x < otherBottomRight.x;
-            yCol = bottomRight.y > otherTopLeft.y && topLeft.y < otherBottomRight.y;
+            xCol = topRight.x > otherBottomLeft.x && bottomLeft.x < otherTopRight.x;
+            yCol = topRight.y > otherBottomLeft.y && bottomLeft.y < otherTopRight.y;
+
+            return xCol && yCol;
+        }
+
+        public bool CollidesWith(Vector2 point, out bool xCol, out bool yCol)
+        {
+            var bottomLeft  = this.bottomLeft;
+            var topRight    = this.topRight;
+
+            xCol = point.x > bottomLeft.x && point.x < topRight.x;
+            yCol = point.y > bottomLeft.y && point.y < topRight.y;
 
             return xCol && yCol;
         }
