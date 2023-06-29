@@ -8,7 +8,7 @@ using Joeri.Tools;
 using Joeri.Tools.Structure;
 using Joeri.Tools.Debugging;
 
-public class Dungeon : Singleton<Dungeon>
+public class Dungeon : MonoBehaviour
 {
     public int halfExtents = 10;
     [Space]
@@ -21,19 +21,17 @@ public class Dungeon : Singleton<Dungeon>
     [Header("Debug:")]
     [SerializeField] Room.DrawStyle m_roomsDrawSyle = Room.DrawStyle.Entire;
 
+    //  Properties:
+    
+
     //  References:
     private Tilemap m_tileMap = null;
 
-    private void Awake()
+    public void Setup()
     {
-        instance = this;
+        m_tileMap   = GetComponent<Tilemap>();
+        rooms       = m_generator.Generate();
 
-        m_tileMap = GetComponent<Tilemap>();
-    }
-
-    private void Start()
-    {
-        rooms = m_generator.Generate();
         m_dresser.Dress(this);
     }
 
@@ -46,15 +44,21 @@ public class Dungeon : Singleton<Dungeon>
 
     public bool HasTile(Vector2Int coords)
     {
-        return HasTile(coords, rooms);
+        return HasTile(coords, rooms, out Tile tile);
     }
 
-    public bool HasTile(Vector2Int coords, List<Room> rooms)
+    public bool HasTile(Vector2Int coords, out Tile tile)
+    {
+        return HasTile(coords, rooms, out tile);
+    }
+
+    public bool HasTile(Vector2Int coords, List<Room> rooms, out Tile tile)
     {
         for (int i = 0; i < rooms.Count; i++)
         {
-            if (rooms[i].HasTile(coords)) return true;
+            if (rooms[i].HasTile(coords, out tile)) return true;
         }
+        tile = null;
         return false;
     }
 
@@ -79,6 +83,9 @@ public class Dungeon : Singleton<Dungeon>
         return new Vector2(coords.x + 0.5f, coords.y + 0.5f);
     }
 
+    
+
+
     public void Draw()
     {
         if (rooms == null) return;
@@ -89,4 +96,6 @@ public class Dungeon : Singleton<Dungeon>
     {
         for (int i = 0; i < rooms.Count; i++) rooms[i].Draw(m_roomsDrawSyle);
     }
+
+    
 }
