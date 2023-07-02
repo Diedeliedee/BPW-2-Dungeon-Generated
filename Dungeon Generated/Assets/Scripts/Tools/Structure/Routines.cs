@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Joeri.Tools.Structure
 {
-    public static class CommonRoutines
+    public static class Routines
     {
         /// <summary>
         /// Waits for the specified amount of seconds before trigerring the event.
@@ -27,7 +27,7 @@ namespace Joeri.Tools.Structure
         /// <summary>
         /// Progresses a timer, and calls the 'onTick' each frame, before calling the 'onFinish' event.
         /// </summary>
-        public static IEnumerator Progression(float time, ProgressionEvent onTick, Action onFinish)
+        public static IEnumerator Progression(float time, Action<float> onTick, Action onFinish)
         {
             var timer = 0f;
 
@@ -64,7 +64,7 @@ namespace Joeri.Tools.Structure
         /// <summary>
         /// Progresses a timer, and calls the 'onTick' each frame with an AnimationCurve 0-1 float as parameter, before calling the 'onFinish' event.
         /// </summary>
-        public static IEnumerator CustomProgression(float time, AnimationCurve curve, ProgressionEvent onTick, Action onFinish)
+        public static IEnumerator CustomProgression(float time, AnimationCurve curve, Action<float> onTick, Action onFinish)
         {
             var timer = 0f;
 
@@ -76,7 +76,5 @@ namespace Joeri.Tools.Structure
             }
             onFinish.Invoke();
         }
-
-        public delegate void ProgressionEvent(float progression);
     }
 }

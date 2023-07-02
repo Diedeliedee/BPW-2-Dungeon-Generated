@@ -19,7 +19,7 @@ public struct Path
         var coordinatesList = new List<Vector2Int>();
 
         first   = from;
-        last    = to;
+        last    = from + offset.ToVector();
 
         for (int i = 0; i < stepAmount; i++)
         {
