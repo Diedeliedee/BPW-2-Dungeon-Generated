@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
+using Joeri.Tools.Utilities;
 using Joeri.Tools.Debugging;
 
-namespace Joeri.Tools
+namespace Joeri.Tools.Pathfinding
 {
     public class PathfindTest : MonoBehaviour
     {
@@ -78,9 +79,11 @@ namespace Joeri.Tools
             return m_validPositions[coordinate.x, coordinate.y];
         }
 
-        private Vector3 GetWorldPosition(Vector2 flatPos)
+        private Vector3 GetWorldPosition(Vector2 flatPos, bool applyOffset = true)
         {
-            var localPosition   = new Vector3(flatPos.x - m_gridExtents + 0.5f, 0f, flatPos.y - m_gridExtents + 0.5f);
+            var offset = applyOffset ? 0.5f : 0f;
+
+            var localPosition   = new Vector3(flatPos.x - m_gridExtents + offset, 0f, flatPos.y - m_gridExtents + offset);
             var worldPosition   = transform.position + localPosition;
 
             return worldPosition;

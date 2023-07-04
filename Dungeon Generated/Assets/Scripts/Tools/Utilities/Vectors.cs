@@ -63,5 +63,7 @@ namespace Joeri.Tools.Utilities
             degrees *= Mathf.Deg2Rad;
             return new Vector2(Mathf.Cos(degrees), Mathf.Sin(degrees));
         }
+
+        
     }
 }

@@ -1,12 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Joeri.Tools;
+using Joeri.Tools.Pathfinding;
 
-public class PlayerInput
+public class PlayerInput : MonoBehaviour
 {
     [Header("Reference:")]
-    [SerializeField] private Transform m_pathParent;
     [SerializeField] private GameObject m_pathMarker;
 
     //  Dependencies:
@@ -60,7 +59,9 @@ public class PlayerInput
         ClearPathIndicator();
         if (m_selection.GetOffset(m_player.coordinates) != Vector2Int.zero)
         {
-            m_player.Move(m_selection.GetPath().last);
+            var movementPath = new Pathfinder.Path(m_selection.GetPath().coordinates);
+
+            m_player.MoveAlong(movementPath);
         }
         m_selection = null;
     }
@@ -73,7 +74,7 @@ public class PlayerInput
 
         for (int i = 0; i < path.Length; i++)
         {
-            var spawnedMarker   = Object.Instantiate(m_pathMarker, Dungeon.CoordsToPos(path[i]), Quaternion.identity, m_pathParent);
+            var spawnedMarker   = Object.Instantiate(m_pathMarker, Dungeon.CoordsToPos(path[i]), Quaternion.identity, transform);
 
             spawnedMarker.name  = $"Player path marker: {i}";
             m_pathMarkers       .Add(spawnedMarker);
@@ -101,15 +102,15 @@ public class PlayerInput
 
         public MovementSelection(Vector2 mousePos, Vector2Int playerCoords, System.Action<Vector2Int> onTileChange, Camera cam, Dungeon dung)
         {
-            mousePosition   = mousePos;
-            coordinates     = GetSelectedCoordinates(mousePos);
-
-            m_playerCoordinates = playerCoords;
+            m_camera    = cam;
+            m_dungeon   = dung;
 
             this.onTileChange   = onTileChange;
 
-            m_camera    = cam;
-            m_dungeon   = dung;
+            m_playerCoordinates = playerCoords;
+
+            mousePosition   = mousePos;
+            coordinates     = GetSelectedCoordinates(mousePos);
         }
 
         public void UpdateMousePosition(Vector2 mousePos)

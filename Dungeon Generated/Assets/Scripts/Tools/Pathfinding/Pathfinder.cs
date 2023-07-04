@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Joeri.Tools.Utilities;
 
-namespace Joeri.Tools
+namespace Joeri.Tools.Pathfinding
 {
     /// <summary>
     /// Simple A* pathfinder
@@ -159,83 +160,50 @@ namespace Joeri.Tools
 
         public class Path
         {
-            public readonly PathSlice[] path    = null;
-            public readonly float length        = 0;
+            public readonly Vector2Int[] coordinates = null;
 
-            public Vector2Int first
-            {
-                get => path[0].coordinates;
-            }
+            private Tools.Path m_path;
 
-            public Vector2Int last
-            {
-                get
-                {
-                    var lastSlice = path[path.Length - 1];
-
-                    return lastSlice.coordinates + lastSlice.offset;
-                }
-            }
+            public float length     { get => m_path.length; }
+            public Vector2Int first { get => coordinates[0]; }
+            public Vector2Int last  { get => coordinates[^1]; }
 
             public Path(params Vector2Int[] coordinatesBundle)
             {
-                path = new PathSlice[coordinatesBundle.Length - 1];
+                m_path      = new Tools.Path(CoordsToPosBundle(coordinatesBundle));
+                coordinates = coordinatesBundle;
+            }
 
-                for (int i = 0; i < coordinatesBundle.Length - 1; i++)
-                {
-                    path[i] = new PathSlice(coordinatesBundle[i], coordinatesBundle[i + 1], length);
-                    length += path[i].length;
-                }
+            public Tools.Path.Slice GetSlice(int index)
+            {
+                return m_path[index];
             }
 
             public bool Has(Vector2Int coordinates)
             {
-                for (int i = 0; i < path.Length; i++)
+                for (int i = 0; i < m_path.positions.Length; i++)
                 {
-                    if (path[i].coordinates == coordinates) return true;
+                    var position = m_path.positions[i];
+
+                    if (new Vector2Int(Mathf.FloorToInt(position.x), Mathf.FloorToInt(position.y)) == coordinates) return true;
                 }
                 return false;
             }
 
             public Vector2 Lerp(float t)
             {
-                var desiredSlice = path[path.Length - 1];
-
-                t *= length;
-                foreach (var slice in path)
-                {
-                    if (slice.tail + slice.length < t) continue;
-                    desiredSlice = slice;
-                    break;
-                }
-
-                t -= desiredSlice.tail;     //  Cut off the excess tail length;
-                t /= desiredSlice.length;   //  Convert to percentage;
-
-                return desiredSlice.Lerp(t);
+                return m_path.Lerp(t); ;
             }
 
-            public class PathSlice
+            private Vector3[] CoordsToPosBundle(Vector2Int[] coordsBundle)
             {
-                public readonly Vector2Int coordinates;
-                public readonly Vector2Int offset;
+                var positions = new Vector3[coordsBundle.Length];
 
-                public readonly float length    = 0f;
-                public readonly float tail      = 0f;
-
-                public PathSlice(Vector2Int origin, Vector2Int next, float tail)
+                for (int i = 0; i < coordsBundle.Length; i++)
                 {
-                    coordinates = origin;
-                    offset      = next - origin;
-
-                    length      = offset.magnitude;
-                    this.tail   = tail;
+                    positions[i] = new Vector3(coordsBundle[i].x, coordsBundle[i].y);
                 }
-
-                public Vector2 Lerp(float t)
-                {
-                    return Vector2.Lerp(coordinates, coordinates + offset, t);
-                }
+                return positions;
             }
         }
 

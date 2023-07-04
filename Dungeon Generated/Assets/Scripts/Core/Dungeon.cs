@@ -73,18 +73,23 @@ public class Dungeon : MonoBehaviour
         }
     }
 
+    /// <returns>The coordinates of the "tile" the passed in position resides in.</returns>
     public static Vector2Int PosToCoords(Vector2 pos)
     {
         return new Vector2Int(Mathf.FloorToInt(pos.x), Mathf.FloorToInt(pos.y));
     }
 
+    /// <returns>The position in the center of the passed in tile's coordinates.</returns>
     public static Vector2 CoordsToPos(Vector2Int coords)
     {
         return new Vector2(coords.x + 0.5f, coords.y + 0.5f);
     }
 
-    
-
+    /// <returns>The position in the center of the passed in tile's coordinates, but using a Vector2 instead.</returns>
+    public static Vector2 CoordsToPos(Vector2 coords)
+    {
+        return new Vector2(coords.x + 0.5f, coords.y + 0.5f);
+    }
 
     public void Draw()
     {
