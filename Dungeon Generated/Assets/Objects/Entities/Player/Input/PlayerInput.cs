@@ -31,14 +31,13 @@ public class PlayerInput
     }
 
     #region Events
-    private void OnClick(Vector2 mousePos, System.Action onRelease)
+    private void OnClick(Vector2 mousePos)
     {
         m_selection = new MovementSelection
             (
                 mousePos,
                 m_player.coordinates,
                 OnTileChange,
-                onRelease,
                 GameManager.instance.camera,
                 GameManager.instance.dungeon
             );
@@ -62,7 +61,6 @@ public class PlayerInput
         if (m_selection.GetOffset(m_player.coordinates) != Vector2Int.zero)
         {
             m_player.Move(m_selection.GetPath().last);
-            m_selection.onConfirm.Invoke();
         }
         m_selection = null;
     }
@@ -97,12 +95,11 @@ public class PlayerInput
         private Vector2Int m_playerCoordinates  = Vector2Int.zero;
 
         public readonly System.Action<Vector2Int> onTileChange  = null;
-        public readonly System.Action onConfirm                 = null;
 
         private Camera m_camera     = null;
         private Dungeon m_dungeon   = null;
 
-        public MovementSelection(Vector2 mousePos, Vector2Int playerCoords, System.Action<Vector2Int> onTileChange, System.Action onConfirm, Camera cam, Dungeon dung)
+        public MovementSelection(Vector2 mousePos, Vector2Int playerCoords, System.Action<Vector2Int> onTileChange, Camera cam, Dungeon dung)
         {
             mousePosition   = mousePos;
             coordinates     = GetSelectedCoordinates(mousePos);
@@ -110,7 +107,6 @@ public class PlayerInput
             m_playerCoordinates = playerCoords;
 
             this.onTileChange   = onTileChange;
-            this.onConfirm      = onConfirm;
 
             m_camera    = cam;
             m_dungeon   = dung;

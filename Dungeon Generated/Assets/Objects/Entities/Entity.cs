@@ -19,7 +19,7 @@ public abstract class Entity : MonoBehaviour
     public System.Action onTurnEnd = null;
 
     //  UI Events:
-    public System.Action<Vector2, System.Action> onMouseClick   = null;
+    public System.Action<Vector2> onMouseClick   = null;
     public System.Action<Vector2> onMouseDrag                   = null;
     public System.Action<Vector2> onMouseRelease                = null;
 
