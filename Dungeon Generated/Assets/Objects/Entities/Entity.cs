@@ -19,9 +19,9 @@ public abstract class Entity : MonoBehaviour
     public System.Action onTurnEnd = null;
 
     //  UI Events:
-    public System.Action<Vector2> onMouseClick      = null;
-    public System.Action<Vector2> onMouseDrag       = null;
-    public System.Action<Vector2> onMouseRelease    = null;
+    public System.Action<Vector2, System.Action> onMouseClick   = null;
+    public System.Action<Vector2> onMouseDrag                   = null;
+    public System.Action<Vector2> onMouseRelease                = null;
 
     #region Properties
     public Vector2Int coordinates
@@ -67,7 +67,7 @@ public abstract class Entity : MonoBehaviour
         m_turnRequirements  = null;
     }
 
-    public void MoveTo(LockedVector movement, System.Action onFinish)
+    public void MoveTo(LockedVector movement)
     {
         var time        = movement.value / m_speed;
         var destination = coordinates + movement.ToVector();
@@ -82,9 +82,9 @@ public abstract class Entity : MonoBehaviour
 
         void OnFinish()
         {
-            coordinates     = destination;
-            m_activeRoutine = null;
-            onFinish        .Invoke();
+            coordinates                 = destination;
+            m_activeRoutine             = null;
+            m_turnRequirements.hasMoved = true;
         }
 
         m_activeRoutine = StartCoroutine(Routines.Progression(time, OnTick, OnFinish));

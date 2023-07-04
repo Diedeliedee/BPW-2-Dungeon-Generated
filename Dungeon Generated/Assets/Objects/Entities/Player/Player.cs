@@ -5,12 +5,9 @@ using UnityEngine;
 
 public class Player : Entity
 {
-    [SerializeField] private PlayerInput m_input;
-
     public override void Setup()
     {
-        base    .Setup();
-        m_input .Setup(this);
+        base.Setup();
     }
 
     public override void OnStartTurn(Action onFinish)
@@ -26,7 +23,7 @@ public class Player : Entity
         //  Disable buttons and stuff.
     }
 
-    private void OnMouseDown()  { if (activeTurn) m_input.OnClick(Input.mousePosition);     }
-    private void OnMouseDrag()  { if (activeTurn) m_input.OnDrag(Input.mousePosition);      }
-    private void OnMouseUp()    { if (activeTurn) m_input.OnRelease(Input.mousePosition);   }
+    private void OnMouseDown()  { if (activeTurn) onMouseClick?.Invoke(Input.mousePosition);    }
+    private void OnMouseDrag()  { if (activeTurn) onMouseDrag?.Invoke(Input.mousePosition);     }
+    private void OnMouseUp()    { if (activeTurn) onMouseRelease?.Invoke(Input.mousePosition);  }
 }
