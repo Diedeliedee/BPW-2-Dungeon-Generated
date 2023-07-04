@@ -6,16 +6,11 @@ namespace Joeri.Tools
     public class PathfindTest : MonoBehaviour
     {
         [Header("Properties:")]
-        [SerializeField] private int m_gridExtents = 1;
-        [SerializeField] private Vector2Int[] m_allowedDirections = new Vector2Int[]
-        {
-            Vector2Int.up,
-            Vector2Int.down,
-            Vector2Int.left,
-            Vector2Int.right
-        };
+        [SerializeField] private bool m_realtime                    = false;
+        [SerializeField] private int m_gridExtents                  = 1;
+        [SerializeField] private Vector2Int[] m_allowedDirections   = new Vector2Int[] { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
         [Space]
-        [SerializeField] [Range(0f, 1f)] private float m_pathLerp = 0f;
+        [SerializeField] [Range(0f, 1f)] private float m_pathlerp   = 0f;
 
         [Header("References:")]
         [SerializeField] private Transform m_start;
@@ -31,19 +26,26 @@ namespace Joeri.Tools
 
         private void Start()
         {
-            m_validPositions    = GetPositions();
             m_pathFinder        = new Pathfinder(IsValidCoordinate, m_allowedDirections);
+
+            m_validPositions    = GetPositions();
             m_result            = m_pathFinder.GetPathResult(GetCoordinate(m_start.position), GetCoordinate(m_goal.position));
 
             m_lerpTest.SetActive(true);
-            m_pathLerp = 0f;
+            m_pathlerp = 0f;
         }
 
         private void Update()
         {
+            if (m_realtime)
+            {
+                m_validPositions    = GetPositions();
+                m_result            = m_pathFinder.GetPathResult(GetCoordinate(m_start.position), GetCoordinate(m_goal.position));
+            }
+
             if (m_result != null && m_result.path != null)
             {
-                m_lerpTest.transform.position = GetWorldPosition(m_result.path.Lerp(m_pathLerp));
+                m_lerpTest.transform.position = GetWorldPosition(m_result.path.Lerp(m_pathlerp));
             }
         }
 
@@ -65,6 +67,7 @@ namespace Joeri.Tools
             }
             return positions;
         }
+
         private bool IsValidCoordinate(Vector2Int coordinate)
         {
             var gridSize    = m_gridExtents * 2;
@@ -75,9 +78,9 @@ namespace Joeri.Tools
             return m_validPositions[coordinate.x, coordinate.y];
         }
 
-        private Vector3 GetWorldPosition(Vector2 coordinates)
+        private Vector3 GetWorldPosition(Vector2 flatPos)
         {
-            var localPosition   = new Vector3(coordinates.x - m_gridExtents + 0.5f, 0f, coordinates.y - m_gridExtents + 0.5f);
+            var localPosition   = new Vector3(flatPos.x - m_gridExtents + 0.5f, 0f, flatPos.y - m_gridExtents + 0.5f);
             var worldPosition   = transform.position + localPosition;
 
             return worldPosition;
@@ -107,12 +110,34 @@ namespace Joeri.Tools
 
         private void OnDrawGizmos()
         {
-            void OnEvaluate(Vector2Int coordinates, bool occupied)
-            {
-                GizmoTools.DrawOutlinedBox(GetWorldPosition(coordinates), Vector3.one * 0.9f, GetNodeColor(coordinates, occupied), 0.5f, true, 0.5f);
-            }
+            var nodeSize        = Vector3.one * 0.9f;
+            var opacity         = 0.5f;
+            var solid           = true;
+            var solidOpacity    = 0.5f;
 
-            GetPositions(OnEvaluate);
+            if (Application.isPlaying)
+            {
+                if (m_result == null || m_validPositions == null) return;
+                for (int x = 0; x < m_validPositions.GetLength(0); x++)
+                {
+                    for (int y = 0; y < m_validPositions.GetLength(1); y++)
+                    {
+                        var coordinates = new Vector2Int(x, y);
+                        var position    = GetWorldPosition(coordinates);
+
+                        GizmoTools.DrawOutlinedBox(position, nodeSize, GetNodeColor(coordinates, !m_validPositions[x, y]), opacity, solid, solidOpacity);
+                    }
+                }
+            }
+            else
+            {
+                void OnEvaluate(Vector2Int coordinates, bool occupied)
+                {
+                    GizmoTools.DrawOutlinedBox(GetWorldPosition(coordinates), nodeSize, GetNodeColor(coordinates, occupied), opacity, solid, solidOpacity);
+                }
+
+                GetPositions(OnEvaluate);
+            }
         }
     }
 }
