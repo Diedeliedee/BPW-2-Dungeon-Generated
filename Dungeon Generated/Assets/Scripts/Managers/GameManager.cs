@@ -8,7 +8,7 @@ public class GameManager : Singleton<GameManager>
     [Header("References:")]
     public Dungeon          dungeon;
     public EntityManager    entities;
-    public Camera           camera;
+    public CameraManager    camera;
 
     //  State machine:
     private FSM m_stateMachine          = null;
@@ -28,6 +28,7 @@ public class GameManager : Singleton<GameManager>
     {
         dungeon     .Setup();
         entities    .Setup();
+        camera      .Setup();
 
         StartGame();
     }
@@ -36,6 +37,11 @@ public class GameManager : Singleton<GameManager>
     {
         m_turnManager   = new TurnManager(entities.player);
         m_stateMachine  .SwitchToState(typeof(FreeRoam));
+    }
+
+    private void PrepareForTurn(Entity entity, System.Action onFinish)
+    {
+        camera.MoveTo(entity.coordinates, onFinish);
     }
 
     #region Game States
@@ -55,7 +61,7 @@ public class GameManager : Singleton<GameManager>
                 if (m_spotted) { SwitchToState(typeof(Combat)); return; }
 
                 //  Otherwise, it's the player's turn again.
-                root.m_turnManager.StartNextTurn(StartRecursiveTurn);
+                root.m_turnManager.StartNextTurn(root.PrepareForTurn, StartRecursiveTurn);
             }
 
             Debug.Log("Started game. Entered freeroam.");
@@ -92,7 +98,7 @@ public class GameManager : Singleton<GameManager>
                 if (m_enemiesDefeated) { SwitchToState(typeof(FreeRoam)); return; }
 
                 //  Otherwise, start the next entity's turn.
-                root.m_turnManager.StartNextTurn(StartRecursiveCombatTurnLoop);
+                root.m_turnManager.StartNextTurn(root.PrepareForTurn, StartRecursiveCombatTurnLoop);
             }
 
             Debug.Log("Combat ensued!!!.");

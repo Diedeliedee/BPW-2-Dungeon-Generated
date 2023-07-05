@@ -15,10 +15,6 @@ public class PlayerInput : MonoBehaviour
     private MovementSelection m_selection   = null;
     private List<GameObject> m_pathMarkers  = null;
 
-    //  Properties:
-    private Dungeon dungeon { get => GameManager.instance.dungeon; }
-    private Camera camera   { get => GameManager.instance.camera; }
-
     public void Setup(Player player)
     {
         m_player        = player;
@@ -37,7 +33,7 @@ public class PlayerInput : MonoBehaviour
                 mousePos,
                 m_player.coordinates,
                 OnTileChange,
-                GameManager.instance.camera,
+                GameManager.instance.camera.camera,
                 GameManager.instance.dungeon
             );
 
@@ -46,6 +42,7 @@ public class PlayerInput : MonoBehaviour
 
     private void OnDrag(Vector2 mousePos)
     {
+        if (m_selection == null) return;
         m_selection.UpdateMousePosition(mousePos);
     }
 
@@ -56,6 +53,8 @@ public class PlayerInput : MonoBehaviour
 
     private void OnRelease(Vector2 mousePos)
     {
+        if (m_selection == null) return;
+
         ClearPathIndicator();
         if (m_selection.GetOffset(m_player.coordinates) != Vector2Int.zero)
         {
@@ -100,10 +99,10 @@ public class PlayerInput : MonoBehaviour
         private Camera m_camera     = null;
         private Dungeon m_dungeon   = null;
 
-        public MovementSelection(Vector2 mousePos, Vector2Int playerCoords, System.Action<Vector2Int> onTileChange, Camera cam, Dungeon dung)
+        public MovementSelection(Vector2 mousePos, Vector2Int playerCoords, System.Action<Vector2Int> onTileChange, Camera camera, Dungeon dungeon)
         {
-            m_camera    = cam;
-            m_dungeon   = dung;
+            m_camera    = camera;
+            m_dungeon   = dungeon;
 
             this.onTileChange   = onTileChange;
 

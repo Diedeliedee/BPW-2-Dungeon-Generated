@@ -32,9 +32,18 @@ public class TurnManager
     /// <summary>
     /// Calls the next entity's OnStartTurn(...) function, and sends out a callback whenever the turn has ended.
     /// </summary>
-    public void StartNextTurn(Action onFinish)
+    public void StartNextTurn(Action<Entity, Action> onTurnPrepare, Action onFinish)
     {
         var entity = activeEntity;
+
+        void OnTurnStart()
+        {
+            //  Debug:
+            Debug.Log($"New turn started! It's {entity}'s turn!", entity);
+
+            //  Call turn function in entity.
+            entity.OnStartTurn(OnTurnEnd);
+        }
 
         void OnTurnEnd()
         {
@@ -46,11 +55,8 @@ public class TurnManager
             onFinish    .Invoke();
         }
 
-        //  Debug:
-        Debug.Log($"New turn started! It's {entity}'s turn!", entity);
-
-        //  Call turn function in entity.
-        entity.OnStartTurn(OnTurnEnd);
+        //  Call prepare event.
+        onTurnPrepare.Invoke(entity, OnTurnStart);
     }
 
     /// <summary>
