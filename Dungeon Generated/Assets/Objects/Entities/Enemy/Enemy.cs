@@ -22,7 +22,7 @@ public class Enemy : Character
 
     public override void EndTurn()
     {
-        //  No idea what to put here.
         base.EndTurn();
+        //  No idea what to put here.
     }
 }

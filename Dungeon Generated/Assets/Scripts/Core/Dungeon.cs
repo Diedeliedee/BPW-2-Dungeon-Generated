@@ -22,7 +22,13 @@ public class Dungeon : MonoBehaviour
     [SerializeField] Room.DrawStyle m_roomsDrawSyle = Room.DrawStyle.Entire;
 
     //  Properties:
-    
+    public Vector2Int[] allowedDirections = new Vector2Int[]
+    {
+        Vector2Int.up,
+        Vector2Int.down,
+        Vector2Int.left,
+        Vector2Int.right
+    };
 
     //  References:
     private Tilemap m_tileMap = null;

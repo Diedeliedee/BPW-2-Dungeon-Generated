@@ -8,45 +8,39 @@ using UnityEngine;
 
 public class TurnHandler
 {
+    private Character m_activeCharacter         = null;
     private TurnRequirements m_turnRequirements = null;
-    private Action m_inputModuleCallback        = null;
 
-    public void StartTurn(Character character, Action onFinish)
+    public void StartTurn(Character character, Action controlCallback)
     {
         void CallCharacterEvent()
         {
             //  Calling turn event.
-            character.OnStartTurn(m_turnRequirements);
+            m_activeCharacter.OnStartTurn(m_turnRequirements);
         }
 
         Debug.Log($"New turn started! It's {character}'s turn!", character);
 
         //  Preparing variables.
-        m_turnRequirements      = new TurnRequirements(OnTurnFinish);
-        m_inputModuleCallback   = onFinish;
+        m_activeCharacter       = character;
+        m_turnRequirements      = new TurnRequirements(controlCallback);
 
         //  Calling prepare event.
         GameManager.instance.events.onTurnPrepare?.Invoke(character, CallCharacterEvent);
     }
 
-    private void OnTurnFinish()
+    public void FinishCurrentTurn()
     {
-        //  Juggling memory.
-        var callBack = m_inputModuleCallback;
+        m_activeCharacter.EndTurn();
 
-        //  Resetting variables.
-        m_turnRequirements      = null;
-        m_inputModuleCallback   = null;
-
-        //  Invoke callback to Input Module.
-        callBack.Invoke();
+        m_activeCharacter   = null;
+        m_turnRequirements  = null;
     }
 
     public class TurnRequirements
     {
         //  Events:
-        public Action onTurnComplete    = null;
-        public Action onTurnFinish      = null;
+        public Action controlCallback    = null;
 
         //  Requirements:
         private bool m_hasMoved = false;
@@ -62,9 +56,9 @@ public class TurnHandler
             }
         }
 
-        public TurnRequirements(Action onTurnFinish)
+        public TurnRequirements(Action controlCallback)
         {
-            this.onTurnFinish = onTurnFinish;
+            this.controlCallback = controlCallback;
         }
 
         public void CheckForFinishTurn()
@@ -76,8 +70,7 @@ public class TurnHandler
 
         private void CompleteTurn()
         {
-            onTurnComplete?.Invoke();
-            onTurnFinish.Invoke();
+            controlCallback?.Invoke();
         }
     }
 }

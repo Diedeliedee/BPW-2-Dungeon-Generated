@@ -35,40 +35,43 @@ public partial class PlayerControl
                     GameManager.instance.dungeon
                 );
 
-            InstantiatePathIndicator(m_selection.GetPath().coordinates);
+            InstantiatePathIndicator();
         }
 
         public override void OnDrag(Vector2 mousePos)
         {
-            m_selection.UpdateMousePosition(mousePos);
+            m_selection.UpdateCoordinates(mousePos);
         }
 
         public override void OnRelease(Vector2 mousePos)
         {
             ClearPathIndicator();
-            if (m_selection.GetOffset(m_player.coordinates) != Vector2Int.zero)
-            {
-                var movementPath = new Pathfinder.Path(m_selection.GetPath().coordinates);
 
-                m_player.MoveAlong(movementPath);
+            if (m_selection.path != null && m_selection.offset != Vector2Int.zero)
+            {
+                m_player.MoveAlong(m_selection.path);
             }
+
             m_selection = null;
         }
 
         private void OnTileChange(Vector2Int newTile)
         {
-            InstantiatePathIndicator(m_selection.GetPath().coordinates);
+            InstantiatePathIndicator();
         }
         #endregion
 
         #region Path Instantiation
-        private void InstantiatePathIndicator(params Vector2Int[] path)
+        private void InstantiatePathIndicator()
         {
+            if (m_selection.path == null) return;
+
             ClearPathIndicator();
 
-            for (int i = 0; i < path.Length; i++)
+            for (int i = 0; i < m_selection.path.coordinates.Length; i++)
             {
-                var spawnedMarker = Object.Instantiate(m_pathMarker, Dungeon.CoordsToPos(path[i]), Quaternion.identity, m_pathParent);
+                var spawnPos        = Dungeon.CoordsToPos(m_selection.path.coordinates[i]);
+                var spawnedMarker   = Object.Instantiate(m_pathMarker, spawnPos, Quaternion.identity, m_pathParent);
 
                 spawnedMarker.name = $"Player path marker: {i}";
                 m_pathMarkers.Add(spawnedMarker);
@@ -84,50 +87,49 @@ public partial class PlayerControl
 
         private class MovementSelection
         {
+            //  Dependencies:
+            private Camera m_camera         = null;
+            private Dungeon m_dungeon       = null;
+            private Pathfinder m_pathFinder = null;
+
+            //  Properties:
+            public Pathfinder.Path path           = null;
             public Vector2Int coordinates           = Vector2Int.zero;
             private Vector2Int m_playerCoordinates  = Vector2Int.zero;
 
+            //  Events:
             public readonly System.Action<Vector2Int> onTileChange = null;
 
-            private Camera m_camera     = null;
-            private Dungeon m_dungeon   = null;
+            public Vector2Int offset { get => coordinates - m_playerCoordinates; }
 
             public MovementSelection(Vector2 mousePos, Vector2Int playerCoords, System.Action<Vector2Int> onTileChange, Camera camera, Dungeon dungeon)
             {
-                m_camera    = camera;
-                m_dungeon   = dungeon;
-
-                this.onTileChange = onTileChange;
+                m_camera        = camera;
+                m_dungeon       = dungeon;
+                m_pathFinder    = new Pathfinder(m_dungeon.HasTile, m_dungeon.allowedDirections);
 
                 m_playerCoordinates = playerCoords;
                 coordinates         = GetSelectedCoordinates(mousePos);
+
+                this.onTileChange = onTileChange;
             }
 
-            public void UpdateMousePosition(Vector2 mousePos)
+            public void UpdateCoordinates(Vector2 mousePos)
             {
                 var newCoordinates = GetSelectedCoordinates(mousePos);
 
                 if (newCoordinates == coordinates) return;
 
                 coordinates = newCoordinates;
+                path      = m_pathFinder.FindPath(m_playerCoordinates, coordinates);
                 onTileChange.Invoke(newCoordinates);
             }
 
-            public Vector2Int GetSelectedCoordinates(Vector2 mousePos)
+            private Vector2Int GetSelectedCoordinates(Vector2 mousePos)
             {
                 var worldPoint = m_camera.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, -m_camera.transform.position.z));
 
                 return Dungeon.PosToCoords(worldPoint);
-            }
-
-            public Path GetPath()
-            {
-                return new Path(m_playerCoordinates, coordinates, m_dungeon);
-            }
-
-            public Vector2Int GetOffset(Vector2Int playerCoordinates)
-            {
-                return coordinates - playerCoordinates;
             }
         }
     }

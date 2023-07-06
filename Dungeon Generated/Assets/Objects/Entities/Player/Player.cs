@@ -18,7 +18,7 @@ public class Player : Character
 
     public override void EndTurn()
     {
-        //  Disable buttons and stuff.
         base.EndTurn();
+        //  Disable buttons and stuff.
     }
 }

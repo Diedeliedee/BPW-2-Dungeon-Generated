@@ -20,17 +20,18 @@ public class Character : Entity
 
     public virtual void OnStartTurn(TurnHandler.TurnRequirements finishRequirements)
     {
+        //  Initializing variables.
         m_turnRequirements = finishRequirements;
-        m_turnRequirements.onTurnComplete += EndTurn;
     }
 
     public virtual void EndTurn()
     {
-        //  Juggle memory, then execute final event.
-        var req = m_turnRequirements;
-
+        //  Resetting variables.
         m_turnRequirements = null;
-        req.onTurnFinish.Invoke();
+
+        //  Clean-up.
+        StopAllCoroutines();
+        Move(new Vector2Int(0, 0));
     }
 
     public void MoveAlong(Pathfinder.Path path)

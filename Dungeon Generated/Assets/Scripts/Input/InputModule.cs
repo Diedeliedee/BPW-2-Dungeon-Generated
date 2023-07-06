@@ -31,8 +31,10 @@ public abstract class ControlModule
     {
         var onFinish = m_onFinish;
 
+        m_turnHandler.FinishCurrentTurn();
         m_active    = false;
         m_onFinish  = null;
+
         onFinish.Invoke();
     }
 }
