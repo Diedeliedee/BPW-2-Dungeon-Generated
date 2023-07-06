@@ -10,16 +10,15 @@ public class Player : Character
         base.Setup();
     }
 
-    public override void OnStartTurn(Action onFinish)
+    public override void OnStartTurn(TurnHandler.TurnRequirements turnReq)
     {
-        base.OnStartTurn(onFinish);
-
+        base.OnStartTurn(turnReq);
         //  Enable buttons and stuff.
     }
 
     public override void EndTurn()
     {
-        base.EndTurn();
         //  Disable buttons and stuff.
+        base.EndTurn();
     }
 }

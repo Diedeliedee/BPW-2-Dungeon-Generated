@@ -20,6 +20,13 @@ public class CameraManager : MonoBehaviour
     public void Setup()
     {
         m_camera = GetComponentInChildren<Camera>();
+
+        GameManager.instance.events.onTurnPrepare += MoveToCharacter;
+    }
+
+    public void MoveToCharacter(Character character, System.Action onFinish)
+    {
+        MoveTo(character.coordinates, onFinish);
     }
 
     public void MoveTo(Vector2Int coordinates, System.Action onFinish)

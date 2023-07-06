@@ -31,6 +31,8 @@ public abstract partial class Entity : MonoBehaviour
             transform.position  = new Vector3(value.x, value.y, transform.position.z);
         }
     }
+
+    private EventManager events { get => GameManager.instance.events; }
     #endregion
 
     public virtual void Setup()
@@ -39,15 +41,18 @@ public abstract partial class Entity : MonoBehaviour
         Move(Vector2Int.zero);
     }
 
-    protected void Move(Vector2Int direction)
+    /// <summary>
+    /// Moves the entity with the passed in offset.
+    /// </summary>
+    protected void Move(Vector2Int offset)
     {
-        if (!GameManager.instance.dungeon.HasTile(coordinates + direction, out Tile tile)) return;
+        if (!GameManager.instance.dungeon.HasTile(coordinates + offset, out Tile tile)) return;
 
-        coordinates     += direction;
+        coordinates     += offset;
         m_currentTile   = tile;
     }
 
-    private void OnMouseDown()  => GameManager.instance.events.onObjectClicked.Invoke(this, Input.mousePosition);
-    private void OnMouseDrag()  => GameManager.instance.events.onObjectDrag.Invoke(this, Input.mousePosition);
-    private void OnMouseUp()    => GameManager.instance.events.onObjectReleased.Invoke(this, Input.mousePosition);
+    private void OnMouseDown()  => events.onObjectClicked?  .Invoke(this, Input.mousePosition);
+    private void OnMouseDrag()  => events.onObjectDrag?     .Invoke(this, Input.mousePosition);
+    private void OnMouseUp()    => events.onObjectReleased? .Invoke(this, Input.mousePosition);
 }

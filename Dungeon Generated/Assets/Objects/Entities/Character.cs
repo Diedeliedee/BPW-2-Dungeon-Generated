@@ -13,29 +13,24 @@ public class Character : Entity
     [SerializeField] private float m_speed;
 
     //  Run-time:
-    protected Coroutine m_activeRoutine             = null;
-    protected TurnRequirements m_turnRequirements   = null;
-
-    //  Core Events:
-    public System.Action onTurnEnd = null;
+    protected Coroutine m_activeRoutine                         = null;
+    protected TurnHandler.TurnRequirements m_turnRequirements   = null;
 
     public bool activeTurn { get => m_turnRequirements != null; }
 
-    public virtual void OnStartTurn(System.Action onFinish)
+    public virtual void OnStartTurn(TurnHandler.TurnRequirements finishRequirements)
     {
-        m_turnRequirements = new TurnRequirements(EndTurn);
-        onTurnEnd = onFinish;
+        m_turnRequirements = finishRequirements;
+        m_turnRequirements.onTurnComplete += EndTurn;
     }
 
     public virtual void EndTurn()
     {
-        var endEvent = onTurnEnd;
+        //  Juggle memory, then execute final event.
+        var req = m_turnRequirements;
 
-        //  Make sure to reset everything before calling the turn end event, as the turn might be recursive.
         m_turnRequirements = null;
-        onTurnEnd = null;
-
-        endEvent?.Invoke();
+        req.onTurnFinish.Invoke();
     }
 
     public void MoveAlong(Pathfinder.Path path)
@@ -49,8 +44,8 @@ public class Character : Entity
 
         void OnFinish()
         {
-            coordinates = path.last;
-            m_activeRoutine = null;
+            coordinates                 = path.last;
+            m_activeRoutine             = null;
             m_turnRequirements.hasMoved = true;
         }
 

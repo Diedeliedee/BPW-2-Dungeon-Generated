@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public partial class PlayerInput
+public partial class PlayerControl
 {
     [System.Serializable]
     public class MovementDrag : Option
@@ -18,13 +18,18 @@ public partial class PlayerInput
         private MovementSelection m_selection   = null;
         private List<GameObject> m_pathMarkers  = new List<GameObject>();
 
+        public void Setup()
+        {
+            m_player = GameManager.instance.entities.player;
+        }
+
         #region Events
         public override void OnClick(Vector2 mousePos)
         {
             m_selection = new MovementSelection
                 (
                     mousePos,
-                    GameManager.instance.entities.player.coordinates,
+                    m_player.coordinates,
                     OnTileChange,
                     GameManager.instance.camera.camera,
                     GameManager.instance.dungeon
@@ -41,11 +46,11 @@ public partial class PlayerInput
         public override void OnRelease(Vector2 mousePos)
         {
             ClearPathIndicator();
-            if (m_selection.GetOffset(GameManager.instance.entities.player.coordinates) != Vector2Int.zero)
+            if (m_selection.GetOffset(m_player.coordinates) != Vector2Int.zero)
             {
                 var movementPath = new Pathfinder.Path(m_selection.GetPath().coordinates);
 
-                GameManager.instance.entities.player.MoveAlong(movementPath);
+                m_player.MoveAlong(movementPath);
             }
             m_selection = null;
         }
@@ -72,16 +77,15 @@ public partial class PlayerInput
 
         private void ClearPathIndicator()
         {
-            for (int i = 0; i < m_pathMarkers.Count; i++) Destroy(m_pathMarkers[i]);
+            for (int i = 0; i < m_pathMarkers.Count; i++) Object.Destroy(m_pathMarkers[i]);
             m_pathMarkers.Clear();
         }
         #endregion
 
         private class MovementSelection
         {
-            public Vector2Int coordinates   = Vector2Int.zero;
-
-            private Vector2Int m_playerCoordinates = Vector2Int.zero;
+            public Vector2Int coordinates           = Vector2Int.zero;
+            private Vector2Int m_playerCoordinates  = Vector2Int.zero;
 
             public readonly System.Action<Vector2Int> onTileChange = null;
 
@@ -96,8 +100,7 @@ public partial class PlayerInput
                 this.onTileChange = onTileChange;
 
                 m_playerCoordinates = playerCoords;
-
-                coordinates     = GetSelectedCoordinates(mousePos);
+                coordinates         = GetSelectedCoordinates(mousePos);
             }
 
             public void UpdateMousePosition(Vector2 mousePos)
