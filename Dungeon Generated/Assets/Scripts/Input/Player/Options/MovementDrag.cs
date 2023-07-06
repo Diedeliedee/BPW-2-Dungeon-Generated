@@ -64,10 +64,9 @@ public partial class PlayerControl
         #region Path Instantiation
         private void InstantiatePathIndicator()
         {
-            if (m_selection.path == null) return;
-
             ClearPathIndicator();
 
+            if (m_selection.path == null) return;
             for (int i = 0; i < m_selection.path.coordinates.Length; i++)
             {
                 var spawnPos        = Dungeon.CoordsToPos(m_selection.path.coordinates[i]);
@@ -121,8 +120,9 @@ public partial class PlayerControl
                 if (newCoordinates == coordinates) return;
 
                 coordinates = newCoordinates;
-                path      = m_pathFinder.FindPath(m_playerCoordinates, coordinates);
                 onTileChange.Invoke(newCoordinates);
+
+                if (offset != Vector2Int.zero) path = m_pathFinder.FindPath(m_playerCoordinates, coordinates);
             }
 
             private Vector2Int GetSelectedCoordinates(Vector2 mousePos)
