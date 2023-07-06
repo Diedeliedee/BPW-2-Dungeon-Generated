@@ -8,7 +8,7 @@ using UnityEngine;
 public class TurnManager
 {
     //  Run-time:
-    public LinkedList<Entity> turnOrder = new LinkedList<Entity>();
+    public LinkedList<Character> turnOrder = new LinkedList<Character>();
 
     //  Cache:
     private Player m_player = null;
@@ -17,10 +17,10 @@ public class TurnManager
     public Action onTurnEnd = null;
 
     #region Properties
-    public int enemyCount                       { get; private set; }
+    public int enemyCount { get; private set; }
 
-    private LinkedListNode<Entity> playerNode   { get => turnOrder.Find(m_player); }
-    private Entity activeEntity                 { get => turnOrder.First(); }
+    private LinkedListNode<Character> playerNode    { get => turnOrder.Find(m_player); }
+    private Character activeEntity                  { get => turnOrder.First(); }
     #endregion
 
     public TurnManager(Player player)
@@ -32,7 +32,7 @@ public class TurnManager
     /// <summary>
     /// Calls the next entity's OnStartTurn(...) function, and sends out a callback whenever the turn has ended.
     /// </summary>
-    public void StartNextTurn(Action<Entity, Action> onTurnPrepare, Action onFinish)
+    public void StartNextTurn(Action<Character, Action> onTurnPrepare, Action onFinish)
     {
         var entity = activeEntity;
 

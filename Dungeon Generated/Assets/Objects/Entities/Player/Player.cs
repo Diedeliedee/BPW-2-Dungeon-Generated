@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : Entity
+public class Player : Character
 {
     public override void Setup()
     {
@@ -22,8 +22,4 @@ public class Player : Entity
         base.EndTurn();
         //  Disable buttons and stuff.
     }
-
-    private void OnMouseDown()  { if (activeTurn) onMouseClick?.Invoke(Input.mousePosition);    }
-    private void OnMouseDrag()  { if (activeTurn) onMouseDrag?.Invoke(Input.mousePosition);     }
-    private void OnMouseUp()    { if (activeTurn) onMouseRelease?.Invoke(Input.mousePosition);  }
 }

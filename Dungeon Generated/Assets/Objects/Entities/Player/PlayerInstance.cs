@@ -15,6 +15,6 @@ public class PlayerInstance : MonoBehaviour
         m_input     = GetComponentInChildren<PlayerInput>();
 
         m_player    .Setup();
-        m_input     .Setup(m_player);
+        m_input     .Setup();
     }
 }

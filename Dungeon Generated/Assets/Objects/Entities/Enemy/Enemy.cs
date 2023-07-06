@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Joeri.Tools.Structure;
 
-public class Enemy : Entity
+public class Enemy : Character
 {
     public override void OnStartTurn(Action onFinish)
     {

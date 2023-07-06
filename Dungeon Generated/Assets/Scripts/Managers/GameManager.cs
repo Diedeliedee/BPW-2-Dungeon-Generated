@@ -17,6 +17,8 @@ public class GameManager : Singleton<GameManager>
     private EventManager m_eventManager = null;
     private TurnManager m_turnManager   = null;
 
+    public EventManager events { get => m_eventManager; }
+
     private void Awake()
     {
         instance        = this;
