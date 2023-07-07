@@ -140,8 +140,7 @@ namespace Joeri.Tools.Pathfinding
         /// <returns>True if the passed in coordinates could harbor a valid Node. False if not.</returns>
         private bool IsValidNode(Vector2Int coordinates)
         {
-            if (!m_nodeCheck(coordinates))  return false;
-                                            return true;
+            return m_nodeCheck(coordinates);
         }
 
         public class Result

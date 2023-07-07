@@ -84,5 +84,13 @@ public partial class PlayerControl : ControlModule
         public abstract void OnDrag(Vector2 mousePos);
 
         public abstract void OnRelease(Vector2 mousePos);
+
+        protected Vector2Int GetSelectedCoordinates(Vector2 mousePos)
+        {
+            var cam         = GameManager.instance.camera.camera;
+            var worldPoint  = cam.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, -cam.transform.position.z));
+
+            return Dungeon.PosToCoords(worldPoint);
+        }
     }
 }

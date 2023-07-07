@@ -28,10 +28,8 @@ public partial class PlayerControl
         {
             m_selection = new MovementSelection
                 (
-                    mousePos,
                     m_player.coordinates,
                     OnTileChange,
-                    GameManager.instance.camera.camera,
                     GameManager.instance.dungeon
                 );
 
@@ -40,7 +38,7 @@ public partial class PlayerControl
 
         public override void OnDrag(Vector2 mousePos)
         {
-            m_selection.UpdateCoordinates(mousePos);
+            m_selection.UpdateCoordinates(GetSelectedCoordinates(mousePos));
         }
 
         public override void OnRelease(Vector2 mousePos)
@@ -87,7 +85,6 @@ public partial class PlayerControl
         private class MovementSelection
         {
             //  Dependencies:
-            private Camera m_camera         = null;
             private Dungeon m_dungeon       = null;
             private Pathfinder m_pathFinder = null;
 
@@ -101,35 +98,25 @@ public partial class PlayerControl
 
             public Vector2Int offset { get => coordinates - m_playerCoordinates; }
 
-            public MovementSelection(Vector2 mousePos, Vector2Int playerCoords, System.Action<Vector2Int> onTileChange, Camera camera, Dungeon dungeon)
+            public MovementSelection(Vector2Int playerCoords, System.Action<Vector2Int> onTileChange, Dungeon dungeon)
             {
-                m_camera        = camera;
                 m_dungeon       = dungeon;
                 m_pathFinder    = new Pathfinder(m_dungeon.HasTile, m_dungeon.allowedDirections);
 
                 m_playerCoordinates = playerCoords;
-                coordinates         = GetSelectedCoordinates(mousePos);
+                coordinates         = playerCoords;
 
                 this.onTileChange = onTileChange;
             }
 
-            public void UpdateCoordinates(Vector2 mousePos)
+            public void UpdateCoordinates(Vector2Int newCoordinates)
             {
-                var newCoordinates = GetSelectedCoordinates(mousePos);
-
                 if (newCoordinates == coordinates) return;
 
-                coordinates = newCoordinates;
+                                                coordinates = newCoordinates;
+                if (offset != Vector2Int.zero)  path        = m_pathFinder.FindPath(m_playerCoordinates, coordinates);
+
                 onTileChange.Invoke(newCoordinates);
-
-                if (offset != Vector2Int.zero) path = m_pathFinder.FindPath(m_playerCoordinates, coordinates);
-            }
-
-            private Vector2Int GetSelectedCoordinates(Vector2 mousePos)
-            {
-                var worldPoint = m_camera.ScreenToWorldPoint(new Vector3(mousePos.x, mousePos.y, -m_camera.transform.position.z));
-
-                return Dungeon.PosToCoords(worldPoint);
             }
         }
     }
