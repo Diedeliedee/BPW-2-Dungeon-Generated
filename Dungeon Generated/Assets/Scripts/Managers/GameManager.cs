@@ -32,13 +32,8 @@ public class GameManager : Singleton<GameManager>
         StartGame();
     }
 
-    private void StartGame()
+    public void StartGame()
     {
         control.StartControlLoop();
-    }
-
-    private void PrepareForTurn(Entity entity, System.Action onFinish)
-    {
-        camera.MoveTo(entity.coordinates, onFinish);
     }
 }

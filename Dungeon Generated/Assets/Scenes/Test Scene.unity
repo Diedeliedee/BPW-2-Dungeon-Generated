@@ -123,6 +123,39 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &223773519 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7740203638906324809, guid: e53c991ab9ed334409a675d7510c069c, type: 3}
+  m_PrefabInstance: {fileID: 7740203638476213618}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &223773520 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7740203638906324814, guid: e53c991ab9ed334409a675d7510c069c, type: 3}
+  m_PrefabInstance: {fileID: 7740203638476213618}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 223773519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 118df60673fcc8d4a8cdcad42658929c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &223773522
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 223773519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: 342214e19743de84994cac89520abf02, type: 2}
 --- !u!20 &298233949 stripped
 Camera:
   m_CorrespondingSourceObject: {fileID: 7740203637950235625, guid: e53c991ab9ed334409a675d7510c069c, type: 3}
@@ -196,6 +229,42 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3039929699781064820, guid: e53c991ab9ed334409a675d7510c069c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3039929699781064820, guid: e53c991ab9ed334409a675d7510c069c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3039929699781064820, guid: e53c991ab9ed334409a675d7510c069c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 223773520}
+    - target: {fileID: 3039929699781064820, guid: e53c991ab9ed334409a675d7510c069c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3039929699781064820, guid: e53c991ab9ed334409a675d7510c069c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: StartGame
+      objectReference: {fileID: 0}
+    - target: {fileID: 3039929699781064820, guid: e53c991ab9ed334409a675d7510c069c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: GameManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3039929699781064820, guid: e53c991ab9ed334409a675d7510c069c, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 5845734154052768244, guid: e53c991ab9ed334409a675d7510c069c, type: 3}
+      propertyPath: m_maxHeight
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 5845734154052768244, guid: e53c991ab9ed334409a675d7510c069c, type: 3}
+      propertyPath: m_rotationSpeed
+      value: 0.05
+      objectReference: {fileID: 0}
     - target: {fileID: 6349351005615321407, guid: e53c991ab9ed334409a675d7510c069c, type: 3}
       propertyPath: m_Camera
       value: 
@@ -203,6 +272,10 @@ PrefabInstance:
     - target: {fileID: 6349351005615321407, guid: e53c991ab9ed334409a675d7510c069c, type: 3}
       propertyPath: m_PlaneDistance
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7740203637950235631, guid: e53c991ab9ed334409a675d7510c069c, type: 3}
+      propertyPath: m_RenderPostProcessing
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7740203638906324809, guid: e53c991ab9ed334409a675d7510c069c, type: 3}
       propertyPath: m_Name
