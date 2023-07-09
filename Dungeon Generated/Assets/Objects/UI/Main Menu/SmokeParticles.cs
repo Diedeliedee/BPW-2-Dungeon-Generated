@@ -27,7 +27,7 @@ public class SmokeParticles : MonoBehaviour
     {
         foreach (var particle in m_particles)
         {
-            var addition = m_rotationSpeed * 360f * Time.deltaTime;
+            var addition = m_rotationSpeed * 360f * Time.unscaledDeltaTime;
 
             particle.localEulerAngles = GetRotation(particle, particle.localEulerAngles.z + addition);
         }
