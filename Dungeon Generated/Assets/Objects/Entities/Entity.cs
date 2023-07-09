@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Joeri.Tools.Structure;
+using Joeri.Tools.Gameify;
 
 public abstract partial class Entity : MonoBehaviour
 {
+    [Header("Sub-components:")]
+    [SerializeField] protected Health m_health;
+
     //  Run-time:
     protected Tile m_currentTile = null;
     protected Vector2Int m_coordinates;
@@ -39,6 +43,9 @@ public abstract partial class Entity : MonoBehaviour
     {
         //  Snap the entity to the grid by moving it to the current tile.
         Move(Vector2Int.zero);
+
+        //  Register events.
+        m_health.onDeath += OnDeath;
     }
 
     /// <summary>
@@ -52,7 +59,15 @@ public abstract partial class Entity : MonoBehaviour
         m_currentTile   = tile;
     }
 
-    private void OnMouseDown()  => events.onObjectClicked?  .Invoke(this, Input.mousePosition);
-    private void OnMouseDrag()  => events.onObjectDrag?     .Invoke(this, Input.mousePosition);
-    private void OnMouseUp()    => events.onObjectReleased? .Invoke(this, Input.mousePosition);
+    public virtual void Damage(int amount)
+    {
+        if (amount <= 0) return;
+
+        m_health.AddHealth(-amount);
+    }
+
+    public virtual void OnDeath()
+    {
+
+    }
 }

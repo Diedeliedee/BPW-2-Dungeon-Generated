@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assets.Scripts.Input.Player.Options
+public partial class PlayerControl
 {
-    class SelectAttack
+    [System.Serializable]
+    public class SelectAttack : Option
     {
+
     }
 }

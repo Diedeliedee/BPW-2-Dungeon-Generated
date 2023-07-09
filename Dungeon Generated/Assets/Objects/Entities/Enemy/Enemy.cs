@@ -25,4 +25,13 @@ public class Enemy : Character
         base.EndTurn();
         //  No idea what to put here.
     }
+
+    public override void OnDeath()
+    {
+        base.OnDeath();
+
+        //  Play sound?
+        GameManager.instance.events.onEnemyDespawn(this);
+        Destroy(gameObject);
+    }
 }

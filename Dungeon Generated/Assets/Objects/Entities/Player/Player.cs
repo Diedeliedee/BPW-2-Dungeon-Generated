@@ -21,4 +21,15 @@ public class Player : Character
         base.EndTurn();
         //  Disable buttons and stuff.
     }
+
+    public override void OnDeath()
+    {
+        base.OnDeath();
+
+        GameManager.instance.events.onPlayerDeath?.Invoke();
+    }
+
+    private void OnMouseDown()  => GameManager.instance.events.onPlayerClicked?     .Invoke(Input.mousePosition);
+    private void OnMouseDrag()  => GameManager.instance.events.onPlayerDragged?     .Invoke(Input.mousePosition);
+    private void OnMouseUp()    => GameManager.instance.events.onPlayerReleased?    .Invoke(Input.mousePosition);
 }

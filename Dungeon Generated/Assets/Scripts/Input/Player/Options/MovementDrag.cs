@@ -18,9 +18,25 @@ public partial class PlayerControl
         private MovementSelection m_selection   = null;
         private List<GameObject> m_pathMarkers  = new List<GameObject>();
 
+        //  Properties:
+        private EventManager events { get => GameManager.instance.events; }
+
         public void Setup()
         {
             m_player = GameManager.instance.entities.player;
+        }
+
+        public void Activate()
+        {
+            events.onPlayerClicked += OnClick;
+        }
+
+        public void Deactivate()
+        {
+            events.onPlayerClicked  -= OnClick;
+            events.onPlayerDragged  -= OnDrag;
+            events.onPlayerReleased -= OnConfirm;
+            ClearPathIndicator();
         }
 
         #region Events
@@ -34,14 +50,17 @@ public partial class PlayerControl
                 );
 
             InstantiatePathIndicator();
+
+            events.onPlayerDragged  += OnDrag;
+            events.onPlayerReleased += OnConfirm;
         }
 
-        public override void OnDrag(Vector2 mousePos)
+        public void OnDrag(Vector2 mousePos)
         {
             m_selection.UpdateCoordinates(GetSelectedCoordinates(mousePos));
         }
 
-        public override void OnRelease(Vector2 mousePos)
+        public override void OnConfirm(Vector2 mousePos)
         {
             ClearPathIndicator();
 
@@ -50,7 +69,9 @@ public partial class PlayerControl
                 m_player.MoveAlong(m_selection.path);
             }
 
-            m_selection = null;
+            m_selection             = null;
+            events.onPlayerDragged  -= OnDrag;
+            events.onPlayerReleased -= OnConfirm;
         }
 
         private void OnTileChange(Vector2Int newTile)

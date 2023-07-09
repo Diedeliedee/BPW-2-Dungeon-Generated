@@ -10,9 +10,11 @@ public class EventManager
     public Action<Enemy> onPlayerSpotted = null;
     public Action<Enemy> onEnemyDespawn  = null;
 
+    public Action onPlayerDeath = null;
+
     public Action<Character, Action> onTurnPrepare = null;
 
-    public Action<UnityEngine.Object, Vector2> onObjectClicked  = null;
-    public Action<UnityEngine.Object, Vector2> onObjectDrag     = null;
-    public Action<UnityEngine.Object, Vector2> onObjectReleased = null;
+    public Action<Vector2> onPlayerClicked  = null;
+    public Action<Vector2> onPlayerDragged  = null;
+    public Action<Vector2> onPlayerReleased = null;
 }

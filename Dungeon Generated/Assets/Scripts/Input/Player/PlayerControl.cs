@@ -6,7 +6,6 @@ using Joeri.Tools.Pathfinding;
 [System.Serializable]
 public partial class PlayerControl : ControlModule
 {
-    [Header("Different Options:")]
     [SerializeField] private MovementDrag m_movement;
 
     //  Run-time:
@@ -16,6 +15,7 @@ public partial class PlayerControl : ControlModule
     //  Cache:
     private Player m_player         = null;
     private EventManager m_events   = null;
+
 
     public override void Setup(TurnHandler turnHandler)
     {
@@ -36,9 +36,7 @@ public partial class PlayerControl : ControlModule
     {
         base.Activate(onFinish);
 
-        m_events.onObjectClicked  += OnObjectClick;
-        m_events.onObjectDrag     += OnObjectDrag;
-        m_events.onObjectReleased += OnObjectRelease;
+        m_movement.Activate();
 
         m_turnHandler.StartTurn(m_player, Deactivate);
 
@@ -47,9 +45,7 @@ public partial class PlayerControl : ControlModule
 
     public override void Deactivate()
     {
-        m_events.onObjectClicked  -= OnObjectClick;
-        m_events.onObjectDrag     -= OnObjectDrag;
-        m_events.onObjectReleased -= OnObjectRelease;
+        m_movement.Deactivate();
 
         //  Call event to disable UI stuff?
 
@@ -73,7 +69,7 @@ public partial class PlayerControl : ControlModule
     {
         if (m_activeOption == null) return;
 
-        m_activeOption?.OnRelease(mousePos);
+        m_activeOption?.OnConfirm(mousePos);
         m_activeOption = null;
     }
 
@@ -81,9 +77,7 @@ public partial class PlayerControl : ControlModule
     {
         public abstract void OnClick(Vector2 mousePos);
 
-        public abstract void OnDrag(Vector2 mousePos);
-
-        public abstract void OnRelease(Vector2 mousePos);
+        public abstract void OnConfirm(Vector2 mousePos);
 
         protected Vector2Int GetSelectedCoordinates(Vector2 mousePos)
         {

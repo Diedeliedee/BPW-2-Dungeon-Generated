@@ -31,6 +31,8 @@ public class GameManager : Singleton<GameManager>
         control     .Setup();
         camera      .Setup();
         ui          .Setup();
+
+        events.onPlayerDeath += OnPlayerDeath;
     }
 
     public void StartGame()
