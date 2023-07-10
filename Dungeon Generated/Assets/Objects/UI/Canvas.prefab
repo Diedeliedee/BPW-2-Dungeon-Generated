@@ -497,7 +497,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_amount: 50
-  m_rotationSpeed: 3
+  m_rotationSpeed: 0.05
   m_maxHeight: 100
   m_scaleCurve:
     serializedVersion: 2
