@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using Joeri.Tools.Utilities;
+using System.Numerics;
 
 [System.Serializable]
 public class DungeonGenerator
@@ -30,10 +31,12 @@ public class DungeonGenerator
 
     public List<Room> Generate()
     {
-        return Iterate(GetRawRooms());
+        var rooms =  GetRawRooms();
+
+        Separate(rooms);
     }
 
-    public List<Room> Iterate(List<Room> rooms)
+    private void Separate(List<Room> rooms)
     {
         void CheckForOverlap(Room anchor)
         {
@@ -59,8 +62,8 @@ public class DungeonGenerator
                 //  In the case that both values are still zero, assign a random direction to either.
                 if (randX == 0 & randY == 0)
                 {
-                    if (Util.RandomChance(0.5f))    randX = Util.RandomChance(0.5f) ? 1 : -1;
-                    else                            randY = Util.RandomChance(0.5f) ? 1 : -1;
+                    if (Util.RandomChance(0.5f)) randX = Util.RandomChance(0.5f) ? 1 : -1;
+                    else randY = Util.RandomChance(0.5f) ? 1 : -1;
                 }
 
                 offset = new Vector2Int(randX, randY);
@@ -83,17 +86,12 @@ public class DungeonGenerator
 
         //  Iterate the current designated room.
         CheckForOverlap(rooms[0]);
+    }
 
-        /*
-        //  Delete rooms :))))))))))))
-        for (int i = 0; i < rooms.Count; i++)
-        {
-            if (Util.RandomChance(0.5f)) continue;
-            rooms.RemoveAt(i--);
-        }
-        */
+    private void Triangulate(List<Room> rooms)
+    {
+        var points = new Vector2Int[rooms.Count];
 
-        //  Return rooms for convenience.
-        return rooms;
+        for (int i = 0; i < rooms.Count; i++) points[i] = rooms[i].position;
     }
 }
