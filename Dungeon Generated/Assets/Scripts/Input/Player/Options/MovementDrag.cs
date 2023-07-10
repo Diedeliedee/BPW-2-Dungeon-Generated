@@ -26,22 +26,26 @@ public partial class PlayerControl
             m_player = GameManager.instance.entities.player;
         }
 
-        public void Activate()
+        public override void Activate(System.Action<Option> onStart)
         {
+            base.Activate(onStart);
+
             events.onPlayerClicked += OnClick;
         }
 
-        public void Deactivate()
+        public override void Deactivate()
         {
             events.onPlayerClicked  -= OnClick;
-            events.onPlayerDragged  -= OnDrag;
-            events.onPlayerReleased -= OnConfirm;
-            ClearPathIndicator();
+            Cancel();
+
+            base.Deactivate();
         }
 
         #region Events
-        public override void OnClick(Vector2 mousePos)
+        private void OnClick(Vector2 mousePos)
         {
+            Prioritize();
+
             m_selection = new MovementSelection
                 (
                     m_player.coordinates,
@@ -49,10 +53,10 @@ public partial class PlayerControl
                     GameManager.instance.dungeon
                 );
 
-            InstantiatePathIndicator();
+            InstantiatePathIndicator(GetSelectedCoordinates(mousePos));
 
             events.onPlayerDragged  += OnDrag;
-            events.onPlayerReleased += OnConfirm;
+            events.onPlayerReleased += OnRelease;
         }
 
         public void OnDrag(Vector2 mousePos)
@@ -60,35 +64,40 @@ public partial class PlayerControl
             m_selection.UpdateCoordinates(GetSelectedCoordinates(mousePos));
         }
 
-        public override void OnConfirm(Vector2 mousePos)
+        private void OnRelease(Vector2 mousePos)
         {
-            ClearPathIndicator();
-
             if (m_selection.path != null && m_selection.offset != Vector2Int.zero)
             {
                 m_player.MoveAlong(m_selection.path);
             }
+            Deactivate();
+        }
 
+        public override void Cancel()
+        {
             m_selection             = null;
             events.onPlayerDragged  -= OnDrag;
-            events.onPlayerReleased -= OnConfirm;
+            events.onPlayerReleased -= OnRelease;
+            ClearPathIndicator();
+
+            base.Cancel();
         }
 
         private void OnTileChange(Vector2Int newTile)
         {
-            InstantiatePathIndicator();
+            if (m_selection.path == null) return;
+            InstantiatePathIndicator(m_selection.path.coordinates);
         }
         #endregion
 
         #region Path Instantiation
-        private void InstantiatePathIndicator()
+        private void InstantiatePathIndicator(params Vector2Int[] coordinates)
         {
             ClearPathIndicator();
 
-            if (m_selection.path == null) return;
-            for (int i = 0; i < m_selection.path.coordinates.Length; i++)
+            for (int i = 0; i < coordinates.Length; i++)
             {
-                var spawnPos        = Dungeon.CoordsToPos(m_selection.path.coordinates[i]);
+                var spawnPos        = Dungeon.CoordsToPos(coordinates[i]);
                 var spawnedMarker   = Object.Instantiate(m_pathMarker, spawnPos, Quaternion.identity, m_pathParent);
 
                 spawnedMarker.name = $"Player path marker: {i}";
@@ -110,7 +119,7 @@ public partial class PlayerControl
             private Pathfinder m_pathFinder = null;
 
             //  Properties:
-            public Pathfinder.Path path           = null;
+            public Pathfinder.Path path             = null;
             public Vector2Int coordinates           = Vector2Int.zero;
             private Vector2Int m_playerCoordinates  = Vector2Int.zero;
 

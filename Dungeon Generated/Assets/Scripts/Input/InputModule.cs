@@ -25,6 +25,14 @@ public abstract class ControlModule
     }
 
     /// <summary>
+    /// Called every frame.
+    /// </summary>
+    public virtual void Tick()
+    {
+
+    }
+
+    /// <summary>
     /// Deactivates control module, ending the current controller's turn. Call base after resetting values!
     /// </summary>
     public virtual void Deactivate()

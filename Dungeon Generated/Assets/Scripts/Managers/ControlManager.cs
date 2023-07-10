@@ -10,7 +10,8 @@ public class ControlManager : MonoBehaviour
     [SerializeField] private PlayerControl  m_playerControl;
     [SerializeField] private EnemyControl   m_enemyControl;
 
-    private TurnHandler m_turnHandler = new TurnHandler();
+    private ControlModule m_activeModule    = null;
+    private TurnHandler m_turnHandler       = new TurnHandler();
 
     public void Setup()
     {
@@ -18,9 +19,15 @@ public class ControlManager : MonoBehaviour
         m_enemyControl  .Setup(m_turnHandler);
     }
 
+    public void Tick()
+    {
+        m_activeModule?.Tick();
+    }
+
     public void StartControlLoop()
     {
-        m_playerControl.Activate(OnPlayerControlFinish);
+        m_activeModule = m_playerControl;
+        m_activeModule.Activate(OnPlayerControlFinish);
     }
 
     private void OnPlayerControlFinish()
@@ -28,17 +35,20 @@ public class ControlManager : MonoBehaviour
         //  Give enemy AI control if enemies have entered combat.
         if (m_enemyControl.enemyCount > 0)
         {
-            m_enemyControl.Activate(OnEnemyControlFinish);
+            m_activeModule = m_enemyControl;
+            m_activeModule.Activate(OnEnemyControlFinish);
             //  Initiate combat type stuff?
             return;
         }
 
         //  If not, keep giving player control.
-        m_playerControl.Activate(OnPlayerControlFinish);
+        m_activeModule = m_playerControl;
+        m_activeModule.Activate(OnPlayerControlFinish);
     }
 
     private void OnEnemyControlFinish()
     {
-        m_playerControl.Activate(OnPlayerControlFinish);
+        m_activeModule = m_playerControl;
+        m_activeModule.Activate(OnPlayerControlFinish);
     }
 }

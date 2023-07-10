@@ -12,6 +12,8 @@ public class EventManager
 
     public Action onPlayerDeath = null;
 
+    public Action<Attack> onAttackSelected = null;
+
     public Action<Character, Action> onTurnPrepare = null;
 
     public Action<Vector2> onPlayerClicked  = null;

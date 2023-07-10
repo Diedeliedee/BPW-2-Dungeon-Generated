@@ -35,6 +35,11 @@ public class GameManager : Singleton<GameManager>
         events.onPlayerDeath += OnPlayerDeath;
     }
 
+    private void Update()
+    {
+        control.Tick();
+    }
+
     public void StartGame()
     {
         control.StartControlLoop();
