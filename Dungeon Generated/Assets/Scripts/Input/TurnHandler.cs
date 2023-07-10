@@ -13,12 +13,6 @@ public class TurnHandler
 
     public void StartTurn(Character character, Action controlCallback)
     {
-        void CallCharacterEvent()
-        {
-            //  Calling turn event.
-            m_activeCharacter.OnStartTurn(m_turnRequirements);
-        }
-
         Debug.Log($"New turn started! It's {character}'s turn!", character);
 
         //  Preparing variables.
@@ -26,7 +20,8 @@ public class TurnHandler
         m_turnRequirements      = new TurnRequirements(controlCallback);
 
         //  Calling prepare event.
-        GameManager.instance.events.onTurnPrepare?.Invoke(character, CallCharacterEvent);
+        m_activeCharacter.OnStartTurn(m_turnRequirements);
+        GameManager.instance.events.onTurnStart?.Invoke(character);
     }
 
     public void FinishCurrentTurn()
@@ -43,7 +38,8 @@ public class TurnHandler
         public Action controlCallback    = null;
 
         //  Requirements:
-        private bool m_hasMoved = false;
+        private bool m_hasMoved     = false;
+        private bool m_hasAttacked  = false;
 
         //  Accesors:
         public bool hasMoved
@@ -51,7 +47,17 @@ public class TurnHandler
             get => m_hasMoved;
             set
             {
-                m_hasMoved = true;
+                m_hasMoved = value;
+                CheckForFinishTurn();
+            }
+        }
+
+        public bool hasAttacked
+        {
+            get => m_hasAttacked;
+            set
+            {
+                m_hasAttacked = value;
                 CheckForFinishTurn();
             }
         }
@@ -63,7 +69,8 @@ public class TurnHandler
 
         public void CheckForFinishTurn()
         {
-            if (!m_hasMoved) return;
+            if (!m_hasMoved)    return;
+            if (!m_hasAttacked) return;
 
             CompleteTurn();
         }

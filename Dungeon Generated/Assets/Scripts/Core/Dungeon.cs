@@ -109,6 +109,21 @@ public class Dungeon : MonoBehaviour
         return new Vector2(coords.x + 0.5f, coords.y + 0.5f);
     }
 
+    public static Vector2Int GetGeneralDirection(Vector2Int offset)
+    {
+        if (Mathf.Abs(offset.x) < Mathf.Abs(offset.y))
+        {
+            offset.x = 0;
+            offset.y = Mathf.Clamp(offset.x, -1, 1);
+        }
+        else
+        {
+            offset.y = 0;
+            offset.x = Mathf.Clamp(offset.x, -1, 1);
+        }
+        return offset;
+    }
+
     public void Draw()
     {
         if (rooms == null) return;

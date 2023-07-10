@@ -79,11 +79,19 @@ public class DungeonGenerator
 
             //  Check if the moved room has any new overlaps to be fixed.
             CheckForOverlap(other);
-
         }
 
         //  Iterate the current designated room.
         CheckForOverlap(rooms[0]);
+
+        /*
+        //  Delete rooms :))))))))))))
+        for (int i = 0; i < rooms.Count; i++)
+        {
+            if (Util.RandomChance(0.5f)) continue;
+            rooms.RemoveAt(i--);
+        }
+        */
 
         //  Return rooms for convenience.
         return rooms;

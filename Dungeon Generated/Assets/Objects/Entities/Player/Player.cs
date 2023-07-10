@@ -1,3 +1,4 @@
+using Joeri.Tools.Pathfinding;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -5,11 +6,6 @@ using UnityEngine;
 
 public class Player : Character
 {
-    public override void Setup()
-    {
-        base.Setup();
-    }
-
     public override void OnStartTurn(TurnHandler.TurnRequirements turnReq)
     {
         base.OnStartTurn(turnReq);
@@ -27,6 +23,12 @@ public class Player : Character
         base.OnDeath();
 
         GameManager.instance.events.onPlayerDeath?.Invoke();
+    }
+
+    public override void MoveAlong(Pathfinder.Path path, Action onFinish)
+    {
+        GameManager.instance.events.onPlayerMoved?.Invoke(path.last);
+        base.MoveAlong(path, onFinish);
     }
 
     private void OnMouseDown()  => GameManager.instance.events.onPlayerClicked?     .Invoke(Input.mousePosition);

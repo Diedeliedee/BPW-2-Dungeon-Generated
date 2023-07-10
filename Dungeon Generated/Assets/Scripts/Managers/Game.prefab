@@ -324,8 +324,7 @@ GameObject:
   - component: {fileID: 6019343820287732877}
   - component: {fileID: 8238569265040730621}
   - component: {fileID: 4935980232099451970}
-  - component: {fileID: 8504187071101430034}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Walls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -495,19 +494,6 @@ CompositeCollider2D:
     m_Paths: []
   m_VertexDistance: 0.0005
   m_OffsetDistance: 0.00005
---- !u!114 &8504187071101430034
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2884555476732024415}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9e967aa7f3e0c474eb84910606c12180, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  selfShadows: 0
 --- !u!1 &4188716355387132997
 GameObject:
   m_ObjectHideFlags: 0
@@ -566,7 +552,6 @@ MonoBehaviour:
     groundTile: {fileID: 11400000, guid: 6b0c2d40dfad2904f8df9ba99f720fc9, type: 2}
     walls: {fileID: 7275913277227137469}
     wallTile: {fileID: 11400000, guid: a9573976f517c5844a14ce612a0f3d51, type: 2}
-    shadowCreator: {fileID: 8504187071101430034}
   m_roomsDrawSyle: 1
   allowedDirections:
   - {x: 0, y: 1}

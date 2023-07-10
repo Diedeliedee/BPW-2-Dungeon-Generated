@@ -21,15 +21,15 @@ public class CameraManager : MonoBehaviour
     {
         m_camera = GetComponentInChildren<Camera>();
 
-        GameManager.instance.events.onTurnPrepare += MoveToCharacter;
+        GameManager.instance.events.onTurnStart += MoveToCharacter;
     }
 
-    public void MoveToCharacter(Character character, System.Action onFinish)
+    public void MoveToCharacter(Character character)
     {
-        MoveTo(character.coordinates, onFinish);
+        MoveTo(character.coordinates);
     }
 
-    public void MoveTo(Vector2Int coordinates, System.Action onFinish)
+    public void MoveTo(Vector2Int coordinates)
     {
         var startPosition   = transform.position;
         var endPosition     = Dungeon.CoordsToPos(coordinates);
@@ -44,7 +44,6 @@ public class CameraManager : MonoBehaviour
         {
             transform.position  = endPosition;
             m_movementRoutine   = null;
-            onFinish            .Invoke();
         }
 
         if (m_movementRoutine != null)

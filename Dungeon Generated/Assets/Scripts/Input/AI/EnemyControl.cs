@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using Joeri.Tools.Pathfinding;
 
 [System.Serializable]
 public class EnemyControl : ControlModule
 {
     private List<Enemy> m_alarmedEnemies    = new List<Enemy>();
     private int m_enemyIndex                = 0;
+
+    private Pathfinder m_pathfinder = null;
 
     /// <summary>
     /// Amount of enemies currently active and in combat.
@@ -14,7 +17,11 @@ public class EnemyControl : ControlModule
 
     public override void Setup(TurnHandler turnHandler)
     {
+        var dungeon = GameManager.instance.dungeon;
+
         base.Setup(turnHandler);
+
+        m_pathfinder = new Pathfinder(dungeon.HasTile, dungeon.allowedDirections);
 
         GameManager.instance.events.onPlayerSpotted += Enqueue;
         GameManager.instance.events.onEnemyDespawn  += Remove;
@@ -22,31 +29,63 @@ public class EnemyControl : ControlModule
 
     public override void Activate(System.Action onFinish)
     {
-        void StartEnemyTurn()
-        {
-            //  Increment enemy index, and start their turn.
-            m_turnHandler.StartTurn(m_alarmedEnemies[m_enemyIndex++], OnTurnFinish);
-        }
-        
-        void OnTurnFinish()
-        {
-            //  Deactivate if all turns have been completed.
-            if (m_enemyIndex >= enemyCount) { Deactivate(); return; }
-            StartEnemyTurn();
-        }
-
         //  Initialize turn loop.
         base.Activate(onFinish);
         StartEnemyTurn();
     }
 
-    public override void Deactivate()
+    private void StartEnemyTurn()
     {
-        m_enemyIndex = 0;
-        base.Deactivate();
+        var player  = GameManager.instance.entities.player;
+        var enemy   = m_alarmedEnemies[m_enemyIndex++];
+
+        void Walk()
+        {
+            var desiredCoords   = player.coordinates + Dungeon.GetGeneralDirection(enemy.coordinates - player.coordinates);
+            var pathToPlayer    = m_pathfinder.FindPath(enemy.coordinates, desiredCoords);
+
+            if (pathToPlayer == null) OnEnemyTurnFinish();
+            else enemy.MoveAlong(pathToPlayer, Attack);
+        }
+
+        void Attack()
+        {
+            if (Vector2.Distance(player.coordinates, enemy.coordinates) <= 1f)
+            {
+                //  Do epic player attack 'n stuff.
+
+                //  DEBUG: THIS CALLS THE SKIPTURN FUNCTION AFTER THE TURN IS COMPLETE, SINCE THERE IS NO HASATTACKED IN THE TURNREQUIREMENTS.
+                OnEnemyTurnFinish();
+            }
+        }
+
+        //  Increment enemy index, and start their turn.
+        m_turnHandler.StartTurn(enemy, OnEnemyTurnFinish);
+
+        /// For some unkown reason the enemy decides to start it's turn after it's finished walking.
+        /// Very cool Mister Enemy.
+
+        //  Start with a walk.
+        Walk();
     }
 
-    public void Enqueue(Enemy enemy)    => m_alarmedEnemies.Add(enemy);
+    private void OnEnemyTurnFinish()
+    {
+        //  Deactivate if all turns have been completed.
+        if (m_enemyIndex >= enemyCount) { Deactivate(); return; }
+        StartEnemyTurn();
+    }
+    public override void Deactivate()
+    {
+        base.Deactivate();
+        m_enemyIndex = 0;
+    }
+
+    public void Enqueue(Enemy enemy)
+    {
+        if (m_alarmedEnemies.Contains(enemy)) return;
+        m_alarmedEnemies.Add(enemy);
+    }
 
     public void Remove(Enemy enemy)     => m_alarmedEnemies.Remove(enemy);
 }

@@ -36,6 +36,11 @@ public class Character : Entity
 
     public void MoveAlong(Pathfinder.Path path)
     {
+        MoveAlong(path, null);
+    }
+
+    public virtual void MoveAlong(Pathfinder.Path path, Action onFinish)
+    {
         var time = path.length / m_speed;
 
         void OnTick(float progress)
@@ -48,8 +53,15 @@ public class Character : Entity
             coordinates                 = path.last;
             m_activeRoutine             = null;
             m_turnRequirements.hasMoved = true;
+
+            onFinish?.Invoke();
         }
 
         m_activeRoutine = StartCoroutine(Routines.Progression(time, OnTick, OnFinish));
+    }
+
+    public void PerformAttack(Attack attack, Vector2Int coords)
+    {
+
     }
 }

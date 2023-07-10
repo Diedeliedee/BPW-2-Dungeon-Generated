@@ -12,5 +12,8 @@ public class EntityManager : MonoBehaviour
     {
         player  = GetComponentInChildren<Player>();
         enemies = GetComponentsInChildren<Enemy>();
+
+        player.Setup();
+        foreach (var enemy in enemies) enemy.Setup();
     }
 }

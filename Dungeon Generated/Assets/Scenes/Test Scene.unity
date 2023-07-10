@@ -175,8 +175,8 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4618194973552494597, guid: b854bf545d0828c4487bba323ea7485c, type: 3}
-      propertyPath: m_speed
-      value: 5
+      propertyPath: m_discoverDistance
+      value: 5.5
       objectReference: {fileID: 0}
     - target: {fileID: 4618194973552494599, guid: b854bf545d0828c4487bba323ea7485c, type: 3}
       propertyPath: m_Name
@@ -239,7 +239,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8504187071101430034, guid: e53c991ab9ed334409a675d7510c069c, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: e53c991ab9ed334409a675d7510c069c, type: 3}
 --- !u!4 &7740203638476213619 stripped
 Transform:
