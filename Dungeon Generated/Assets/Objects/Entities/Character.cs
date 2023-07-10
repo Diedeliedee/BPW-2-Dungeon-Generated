@@ -11,6 +11,8 @@ public class Character : Entity
 {
     [Header("Properties:")]
     [SerializeField] private float m_speed;
+    [Space]
+    [SerializeField] private AudioClip m_movementAudio;
 
     //  Run-time:
     protected Coroutine m_activeRoutine                         = null;
@@ -53,15 +55,26 @@ public class Character : Entity
             coordinates                 = path.last;
             m_activeRoutine             = null;
             m_turnRequirements.hasMoved = true;
+            StopSound();
 
             onFinish?.Invoke();
         }
 
+        PlaySound(m_movementAudio, 0.25f, 1.1f);
         m_activeRoutine = StartCoroutine(Routines.Progression(time, OnTick, OnFinish));
     }
 
-    public void PerformAttack(Attack attack, Vector2Int coords)
+    public void PerformAttack(Attack attack, Vector2Int coords, Action onFinish)
     {
+        void OnFinish()
+        {
+            m_turnRequirements.hasAttacked = true;
 
+            onFinish?.Invoke();
+        }
+
+        var attackInstance = GameManager.instance.effects.Instantiate<AttackInstance>(attack.instance, coords, Dungeon.GetGeneralDirection(coords - coordinates));
+
+        attackInstance.Activate(attack.damage, OnFinish);
     }
 }

@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: Melee Strike
   m_EditorClassIdentifier: 
   damage: 5
-  icon: {fileID: 0}
+  icon: {fileID: 1741011947, guid: 13087e1b24eaf3b41b6b19945d9a0455, type: 3}
   color: {r: 1, g: 1, b: 1, a: 1}
-  instance: {fileID: 0}
+  instance: {fileID: 1422386918335111069, guid: 15f105098ae7ea64ab0d89ce0bf422b6, type: 3}

@@ -38,7 +38,8 @@ public partial class PlayerControl
         {
             Prioritize();
 
-            m_selectedCoordinates = GetSelectedCoordinates(Input.mousePosition);
+            m_selectedCoordinates   = GetSelectedCoordinates(Input.mousePosition);
+            m_selectedAttack        = attack;
 
             m_marker.Activate(attack, Dungeon.CoordsToPos(m_selectedCoordinates));
         }
@@ -66,8 +67,7 @@ public partial class PlayerControl
 
             if (Input.GetMouseButtonDown(0))
             {
-                //  Do stuff.
-                Deactivate();
+                GameManager.instance.entities.player.PerformAttack(m_selectedAttack, m_selectedCoordinates, null);
             }
         }
 

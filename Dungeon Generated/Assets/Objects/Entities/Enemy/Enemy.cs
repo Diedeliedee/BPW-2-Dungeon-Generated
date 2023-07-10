@@ -10,6 +10,10 @@ public class Enemy : Character
     [Header("Enemy Properties:")]
     [SerializeField] private float m_discoverDistance = 4.5f;
     [SerializeField] private LayerMask m_wallLayer;
+    [Space]
+    [SerializeField] private Attack m_defaultAttack;
+
+    public Attack defaultAttack { get => m_defaultAttack; }
 
     public override void Setup()
     {
@@ -34,6 +38,7 @@ public class Enemy : Character
         base.OnDeath();
 
         //  Play sound?
+        GameManager.instance.events.onPlayerMoved -= EvaluatePlayerInRange;
         GameManager.instance.events.onEnemyDespawn(this);
         Destroy(gameObject);
     }

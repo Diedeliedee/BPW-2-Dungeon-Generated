@@ -10,9 +10,16 @@ public abstract partial class Entity : MonoBehaviour
     [Header("Sub-components:")]
     [SerializeField] protected Health m_health;
 
+    [Header("Entity Properties:")]
+    [SerializeField] private AudioClip m_damageAudio;
+    [SerializeField] private AudioClip m_deathAudio;
+
     //  Run-time:
     protected Tile m_currentTile = null;
     protected Vector2Int m_coordinates;
+
+    //  Cahce:
+    private AudioSource m_audio = null;
 
     #region Properties
     public Vector2Int coordinates
@@ -44,6 +51,9 @@ public abstract partial class Entity : MonoBehaviour
         //  Snap the entity to the grid by moving it to the current tile.
         Move(Vector2Int.zero);
 
+        //  Get AudioSource.
+        m_audio = GetComponent<AudioSource>();
+
         //  Register events.
         m_health.onDeath += OnDeath;
     }
@@ -63,11 +73,28 @@ public abstract partial class Entity : MonoBehaviour
     {
         if (amount <= 0) return;
 
+        PlaySound(m_damageAudio, 1f, 1f);
         m_health.AddHealth(-amount);
     }
 
     public virtual void OnDeath()
     {
+        PlaySound(m_deathAudio, 1f, 1f);
+    }
 
+    public void PlaySound(AudioClip clip, float volume, float pitch = 1f)
+    {
+        if (m_audio == null || clip == null) return;
+        m_audio.clip    = clip;
+        m_audio.volume  = volume;
+        m_audio.pitch   = pitch;
+        m_audio.Play();
+    }
+
+    public void StopSound()
+    {
+        m_audio.clip    = null;
+        m_audio.volume  = 1f;
+        m_audio.pitch   = 1f;
     }
 }

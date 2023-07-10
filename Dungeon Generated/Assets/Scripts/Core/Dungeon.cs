@@ -114,7 +114,7 @@ public class Dungeon : MonoBehaviour
         if (Mathf.Abs(offset.x) < Mathf.Abs(offset.y))
         {
             offset.x = 0;
-            offset.y = Mathf.Clamp(offset.x, -1, 1);
+            offset.y = Mathf.Clamp(offset.y, -1, 1);
         }
         else
         {

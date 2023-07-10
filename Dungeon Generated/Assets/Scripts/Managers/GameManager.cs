@@ -12,6 +12,7 @@ public class GameManager : Singleton<GameManager>
     public CameraManager    camera;
     public ControlManager   control;
     public UIManager        ui;
+    public EffectsManager   effects;
 
     //  Sub-managers:
     private EventManager m_eventManager = null;
@@ -20,8 +21,8 @@ public class GameManager : Singleton<GameManager>
 
     private void Awake()
     {
-        instance = this;
-        m_eventManager = new EventManager();
+        instance        = this;
+        m_eventManager  = new EventManager();
     }
 
     private void Start()

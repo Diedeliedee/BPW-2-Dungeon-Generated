@@ -44,7 +44,7 @@ public class EnemyControl : ControlModule
             var desiredCoords   = player.coordinates + Dungeon.GetGeneralDirection(enemy.coordinates - player.coordinates);
             var pathToPlayer    = m_pathfinder.FindPath(enemy.coordinates, desiredCoords);
 
-            if (pathToPlayer == null) OnEnemyTurnFinish();
+            if (pathToPlayer == null || Vector2.Distance(player.coordinates, enemy.coordinates) <= 1f) OnEnemyTurnFinish();
             else enemy.MoveAlong(pathToPlayer, Attack);
         }
 
@@ -52,9 +52,10 @@ public class EnemyControl : ControlModule
         {
             if (Vector2.Distance(player.coordinates, enemy.coordinates) <= 1f)
             {
-                //  Do epic player attack 'n stuff.
-
-                //  DEBUG: THIS CALLS THE SKIPTURN FUNCTION AFTER THE TURN IS COMPLETE, SINCE THERE IS NO HASATTACKED IN THE TURNREQUIREMENTS.
+                enemy.PerformAttack(enemy.defaultAttack, player.coordinates, null);
+            }
+            else
+            {
                 OnEnemyTurnFinish();
             }
         }
@@ -87,5 +88,8 @@ public class EnemyControl : ControlModule
         m_alarmedEnemies.Add(enemy);
     }
 
-    public void Remove(Enemy enemy)     => m_alarmedEnemies.Remove(enemy);
+    public void Remove(Enemy enemy)
+    {
+        m_alarmedEnemies.Remove(enemy);
+    }
 }

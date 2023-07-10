@@ -81,12 +81,12 @@ namespace Joeri.Tools.Pathfinding
                 while (true)
                 {
                     coordinatesBundle.Add(crumb.coordinates);
-                    crumb = crumb.parent;
                     if (crumb.coordinates == start)
                     {
                         coordinatesBundle.Add(crumb.coordinates);
                         break;
                     }
+                    crumb = crumb.parent;
                 }
                 coordinatesBundle.Reverse();
 
