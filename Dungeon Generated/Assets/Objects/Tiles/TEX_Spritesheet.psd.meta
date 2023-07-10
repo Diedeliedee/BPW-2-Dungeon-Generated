@@ -141,8 +141,8 @@ TextureImporter:
       name: SPR_Wall_Front
       rect:
         serializedVersion: 2
-        x: 64
-        y: 56
+        x: 48
+        y: 0
         width: 16
         height: 16
       alignment: 0

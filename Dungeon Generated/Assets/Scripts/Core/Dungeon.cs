@@ -30,6 +30,18 @@ public class Dungeon : MonoBehaviour
         Vector2Int.right
     };
 
+    public static Vector2Int[] allDirections = new Vector2Int[]
+    {
+        Vector2Int.up,
+        Vector2Int.down,
+        Vector2Int.left,
+        Vector2Int.right,
+        new Vector2Int(1, -1),
+        new Vector2Int(1, 1),
+        new Vector2Int(-1, -1),
+        new Vector2Int(-1, 1),
+    };
+
     //  References:
     private Tilemap m_tileMap = null;
 
