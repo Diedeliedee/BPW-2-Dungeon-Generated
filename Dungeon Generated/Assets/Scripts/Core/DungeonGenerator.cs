@@ -12,7 +12,7 @@ public class DungeonGenerator
     public int roomCount;
     public Vector2Int minSize, maxSize;
 
-    private int roomIteration = 0;
+    private int roomIteration       = 0;
     private int collissionIteration = 0;
 
     public List<Room> GetRawRooms()
