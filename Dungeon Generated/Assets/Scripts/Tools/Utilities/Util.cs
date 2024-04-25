@@ -155,6 +155,15 @@ namespace Joeri.Tools.Utilities
             for (int i = 0; i < _list.Count; i++) castedList.Add((T)_list[i]);
             return castedList;
         }
+
+        public static int StretchToInt(float _value)
+        {
+            var negative    = _value < 0;
+            var stretched   = Mathf.CeilToInt(Mathf.Abs(_value));
+
+            if (negative) stretched = -stretched;
+            return stretched;
+        }
     }
 }
 
