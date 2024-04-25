@@ -45,6 +45,12 @@ namespace DungeonGeneration
             center  = _center;
         }
 
+        public void Snap()
+        {
+            xPos = xPos;
+            yPos = yPos;
+        }
+
         public bool OverlapsWith(IRoom _other)
         {
             // if (right > other left) && ( left < other right)

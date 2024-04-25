@@ -6,11 +6,9 @@ namespace DungeonGeneration
 {
     public class Separator
     {
-        public List<Room> rooms { get; set; }
-
-        public void SteerRoomAway(Room _room)
+        public void SteerRoomAway(Room _room, List<Room> _rooms)
         {
-            var overlappingRooms = GetOverlapping(_room);
+            var overlappingRooms = GetOverlapping(_room, _rooms);
             if (overlappingRooms.Count == 0) return;
 
             var offset = (_room.center - GetAveragePosition(overlappingRooms)).normalized * 0.1f;
@@ -23,36 +21,36 @@ namespace DungeonGeneration
             _room.center += offset;
         }
 
-        public bool OverlapsRemain()
+        public bool OverlapsRemain(List<Room> _rooms)
         {
-            for (int i = 0; i < rooms.Count; i++)
+            for (int i = 0; i < _rooms.Count; i++)
             {
-                if (OverlapsWithAny(rooms[i])) return true;
+                if (OverlapsWithAny(_rooms[i], _rooms)) return true;
             }
             return false;
         }
 
-        public bool OverlapsWithAny(Room _room)
+        public bool OverlapsWithAny(Room _room, List<Room> _rooms)
         {
-            for (int i = 0; i < rooms.Count; i++)
+            for (int i = 0; i < _rooms.Count; i++)
             {
                 //  If the overlap room is the same as the iteration room, skip it.
-                if (rooms[i].GetHashCode() == _room.GetHashCode()) continue;
+                if (_rooms[i].GetHashCode() == _room.GetHashCode()) continue;
                 //  If it overlaps with any room.
-                if (_room.OverlapsWith(rooms[i])) return true;
+                if (_room.OverlapsWith(_rooms[i])) return true;
             }
             return false;
         }
 
-        private List<Room> GetOverlapping(Room _room)
+        private List<Room> GetOverlapping(Room _room, List<Room> _rooms)
         {
             var overlappingRooms = new List<Room>();
 
-            for (int i = 0; i < rooms.Count; i++)
+            for (int i = 0; i < _rooms.Count; i++)
             {
-                if (rooms[i].GetHashCode() == _room.GetHashCode()) continue;
-                if (!_room.OverlapsWith(rooms[i])) continue;
-                overlappingRooms.Add(rooms[i]);
+                if (_rooms[i].GetHashCode() == _room.GetHashCode()) continue;
+                if (!_room.OverlapsWith(_rooms[i])) continue;
+                overlappingRooms.Add(_rooms[i]);
             }
             return overlappingRooms;
         }
