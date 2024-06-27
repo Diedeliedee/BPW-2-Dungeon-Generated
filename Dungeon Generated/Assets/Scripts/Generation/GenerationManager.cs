@@ -25,6 +25,8 @@ public class GenerationManager : MonoBehaviour
     {
         if (!m_iterationTimer.ResetOnReach(Time.deltaTime)) return;
         m_generator.Iterate(settings);
+
+
     }
 
     private void OnDrawGizmosSelected()

@@ -10,13 +10,16 @@ namespace DungeonGeneration
 
         public List<Room> rooms => m_rooms;
 
-        public void SpawnRoom(GenerationSettings _settings)
+        public bool IterateSpawningRooms(GenerationSettings _settings)
         {
             var position    = Util.RandomCirclePoint() * _settings.circleRadius;
             var width       = Random.Range(_settings.minRoomWidth, _settings.maxRoomWidth);
             var height      = Random.Range(_settings.minRoomHeight, _settings.maxRoomHeight);
 
             m_rooms.Add(new Room(width, height, position));
+
+            if (m_rooms.Count == _settings.rooms)   return true;
+                                                    return false;
         }
 
         public void Draw(Color _color)

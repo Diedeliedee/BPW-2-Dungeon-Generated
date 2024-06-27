@@ -13,43 +13,25 @@ namespace DungeonGeneration
         private Prioritizer m_prioritizer   = new();
         private Linker m_linker             = new();
         private Spanner m_spanner           = new();
+        private Corridorer m_corrider       = new();
+        private Includer m_includer         = new();
 
-        private List<Room> rooms => m_spawner.rooms;
-
-        public void Iterate(GenerationSettings _settings)
+        public bool Iterate(GenerationSettings _settings)
         {
             switch (m_stage)
             {
                 case Stage.ROOM_SPAWNING:
-                    //  Spawn a new room.
-                    m_spawner.SpawnRoom(_settings);
-
-                    //  If no more rooms need to be spawned, move on to the next stage.
-                    if (rooms.Count >= _settings.rooms)
-                    {
-                        m_stage = Stage.ROOM_SEPARATION;
-                        return;
-                    }
+                    if (!m_spawner.IterateSpawningRooms(_settings)) break;
+                    m_stage = Stage.ROOM_SEPARATION;
                     break;
 
                 case Stage.ROOM_SEPARATION:
-                    //  Iterate through all the rooms, and nudge them away from overlapping rooms.
-                    for (int i = 0; i < rooms.Count; i++)
-                    {
-                        m_separator.SteerRoomAway(rooms[i], rooms);
-                    }
-
-                    //  If absolutely none of the rooms still overlap, move on to the next stage.
-                    if (!m_separator.OverlapsRemain(rooms))
-                    {
-                        for (int i = 0; i < rooms.Count; i++) rooms[i].Snap();
-                        m_stage = Stage.ROOM_PRIORITIZATION;
-                        return;
-                    }
+                    if (!m_separator.IterateSteeringRooms(m_spawner.rooms)) break;
+                    m_stage = Stage.ROOM_PRIORITIZATION;
                     break;
 
                 case Stage.ROOM_PRIORITIZATION:
-                    m_prioritizer.CacheMainRooms(rooms, _settings.averageSizeMulitplier);
+                    m_prioritizer.CacheMainRooms(m_spawner.rooms, _settings.averageSizeMulitplier);
                     m_stage = Stage.ROOM_LINKING;
                     break;
 
@@ -59,19 +41,32 @@ namespace DungeonGeneration
                     m_spanner.Setup(m_prioritizer.mainRooms[0]);
                     break;
 
-
                 case Stage.ROOM_SPANNING:
                     if (!m_spanner.IterateSpanningTree(m_prioritizer.mainRooms)) break;
+                    m_stage = Stage.ROOM_CORRIDORING;
+                    break;
+
+                case Stage.ROOM_CORRIDORING:
+                    m_corrider.IterateCorridoring(m_prioritizer.mainRooms, _settings);
+                    m_stage = Stage.ROOM_INCLUDING;
+                    break;
+
+                case Stage.ROOM_INCLUDING:
+                    m_includer.IncludeIntersectingRooms(m_corrider.corridors, m_spawner.rooms);
+                    m_stage = Stage.ROOM_INCLUDING;
                     break;
             }
+            return false;
         }
 
         public void Draw(Color _color)
         {
-            m_spawner.Draw(_color);
-            m_prioritizer.Draw(_color);
-            m_linker.Draw(_color);
-            m_spanner.Draw(Color.green);
+            m_spawner       .Draw(_color);
+            m_prioritizer   .Draw(_color);
+            m_linker        .Draw(_color);
+            m_spanner       .Draw(Color.green);
+            m_corrider      .Draw(_color);
+            m_includer      .Draw(Color.blue);
         }
 
         private enum Stage
@@ -81,6 +76,9 @@ namespace DungeonGeneration
             ROOM_PRIORITIZATION,
             ROOM_LINKING,
             ROOM_SPANNING,
+            ROOM_CORRIDORING,
+            ROOM_INCLUDING,
+            Wait,
         }
     }
 }

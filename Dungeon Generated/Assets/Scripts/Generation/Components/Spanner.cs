@@ -23,7 +23,6 @@ namespace DungeonGeneration
             var connection = GetShortestConnectionAvailable();
 
             connection.start.CreatePath(connection.end);
-            connection.end.CreatePath(connection.start);
 
             m_visited.Add(connection.end.GetHashCode(), connection.end);
             return false;

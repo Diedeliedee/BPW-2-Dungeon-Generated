@@ -12,6 +12,8 @@ public struct GenerationSettings
     [Space]
     public int minRoomHeight;
     public int maxRoomHeight;
+    [Space]
+    public int corridorExtents;
 
     [Header("Back-end")]
     public float circleRadius;

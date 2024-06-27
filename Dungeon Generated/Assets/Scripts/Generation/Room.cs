@@ -83,6 +83,7 @@ namespace DungeonGeneration
 
             var connection = new Connection
             {
+                offset  = _room.center - center,
                 length  = Vector2.Distance(center, _room.center),
                 start   = this,
                 end     = _room
@@ -110,6 +111,7 @@ namespace DungeonGeneration
 
         public class Connection
         {
+            public Vector2 offset;
             public float length;
             public Room start;
             public Room end;

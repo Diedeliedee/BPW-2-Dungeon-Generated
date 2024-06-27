@@ -1,12 +1,29 @@
 ﻿using Joeri.Tools.Utilities;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace DungeonGeneration
 {
     public class Separator
     {
-        public void SteerRoomAway(Room _room, List<Room> _rooms)
+        public bool IterateSteeringRooms(List<Room> _rooms)
+        {
+            //  Iterate through all the rooms, and nudge them away from overlapping rooms.
+            for (int i = 0; i < _rooms.Count; i++)
+            {
+                SteerRoomAway(_rooms[i], _rooms);
+            }
+
+            //  If there are still overlaps, return false.
+            if (OverlapsRemain(_rooms)) return false;
+
+            //  If there are no overlaps, snap all the rooms in their place, and return true.
+            for (int i = 0; i < _rooms.Count; i++) _rooms[i].Snap();
+            return true;
+        }
+
+        private void SteerRoomAway(Room _room, List<Room> _rooms)
         {
             var overlappingRooms = GetOverlapping(_room, _rooms);
             if (overlappingRooms.Count == 0) return;
@@ -21,7 +38,7 @@ namespace DungeonGeneration
             _room.center += offset;
         }
 
-        public bool OverlapsRemain(List<Room> _rooms)
+        private bool OverlapsRemain(List<Room> _rooms)
         {
             for (int i = 0; i < _rooms.Count; i++)
             {
@@ -30,7 +47,7 @@ namespace DungeonGeneration
             return false;
         }
 
-        public bool OverlapsWithAny(Room _room, List<Room> _rooms)
+        private bool OverlapsWithAny(Room _room, List<Room> _rooms)
         {
             for (int i = 0; i < _rooms.Count; i++)
             {

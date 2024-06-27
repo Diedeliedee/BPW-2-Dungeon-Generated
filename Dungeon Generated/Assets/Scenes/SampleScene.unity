@@ -377,6 +377,7 @@ MonoBehaviour:
     maxRoomWidth: 10
     minRoomHeight: 3
     maxRoomHeight: 10
+    corridorExtents: 1
     circleRadius: 10
     averageSizeMulitplier: 1
   m_roomColor: {r: 1, g: 1, b: 1, a: 0.2509804}
