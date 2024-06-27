@@ -12,8 +12,9 @@ namespace DungeonGeneration
         private Separator m_separator       = new();
         private Prioritizer m_prioritizer   = new();
         private Linker m_linker             = new();
+        private Spanner m_spanner           = new();
 
-        private List<Room> rooms => rooms;
+        private List<Room> rooms => m_spawner.rooms;
 
         public void Iterate(GenerationSettings _settings)
         {
@@ -54,6 +55,13 @@ namespace DungeonGeneration
 
                 case Stage.ROOM_LINKING:
                     m_linker.CreateDelenautor(m_prioritizer.mainRooms);
+                    m_stage = Stage.ROOM_SPANNING;
+                    m_spanner.Setup(m_prioritizer.mainRooms[0]);
+                    break;
+
+
+                case Stage.ROOM_SPANNING:
+                    if (!m_spanner.IterateSpanningTree(m_prioritizer.mainRooms)) break;
                     break;
             }
         }
@@ -63,6 +71,7 @@ namespace DungeonGeneration
             m_spawner.Draw(_color);
             m_prioritizer.Draw(_color);
             m_linker.Draw(_color);
+            m_spanner.Draw(Color.green);
         }
 
         private enum Stage
@@ -71,6 +80,7 @@ namespace DungeonGeneration
             ROOM_SEPARATION,
             ROOM_PRIORITIZATION,
             ROOM_LINKING,
+            ROOM_SPANNING,
         }
     }
 }
