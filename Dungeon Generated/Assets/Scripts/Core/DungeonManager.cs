@@ -6,11 +6,26 @@ using UnityEngine.Tilemaps;
 
 public class DungeonManager : MonoBehaviour
 {
-    [Header("Properties")]
+    [Header("References:")]
     [SerializeField] private Tilemap m_groundTilemap;
     [SerializeField] private TileBase m_groundTile;
-     
+    [Space]
+    [SerializeField] private Transform m_entities;
+
     private Dictionary<Vector2Int, Tile> m_tileMap;
+
+    private Queue<ITurnReceiver> m_turnReceivers = new();
+    private ITurnReceiver m_currentTurnReceiver = null;
+
+    private void Awake()
+    {
+        var entities = m_entities.GetComponentsInChildren<ITurnReceiver>();
+
+        for (int i = 0; i < entities.Length; i++)
+        {
+            m_turnReceivers.Enqueue(entities[i]);
+        }
+    }
 
     public void CreateFromComposite(Dictionary<Vector2Int, Tile> _composite)
     {
@@ -24,4 +39,26 @@ public class DungeonManager : MonoBehaviour
         }
     }
 
+    public void Tick()
+    {
+        if (m_currentTurnReceiver == null)
+        {
+            m_currentTurnReceiver = m_turnReceivers.Dequeue();
+            m_currentTurnReceiver.OnTurnStart();
+            m_currentTurnReceiver.onTurnEnd.Subscribe(OnTurnEnd);
+        }
+        else
+        {
+            m_currentTurnReceiver.DuringTurn();
+        }
+    }
+
+    private void OnTurnEnd()
+    {
+        m_turnReceivers.Enqueue(m_currentTurnReceiver);
+
+        m_currentTurnReceiver.onTurnEnd.Unsubscribe(OnTurnEnd);
+        m_currentTurnReceiver = null;
+
+    }
 }

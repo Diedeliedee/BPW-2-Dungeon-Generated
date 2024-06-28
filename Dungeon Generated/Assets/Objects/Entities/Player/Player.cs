@@ -1,9 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
+using Joeri.Tools.Utilities;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, ITurnReceiver
 {
     [SerializeField] private int m_movementPerTurn = 10;
 
@@ -15,13 +14,22 @@ public class Player : MonoBehaviour
     private DungeonManager m_dungeon;
     private InputReader m_input;
 
+    private EventWrapper m_onTurnEnd = new();
+
+    public EventWrapper onTurnEnd => m_onTurnEnd;
+
     private void Awake()
     {
         m_dungeon   = GetComponentInParent<DungeonManager>(); 
         m_input     = FindObjectOfType<InputReader>();
     }
 
-    private void Update()
+    public void OnTurnStart()
+    {
+        Debug.Log("Player's Turn!!");
+    }
+
+    public void DuringTurn()
     {
         if (m_input.movementPressed)
         {
@@ -39,9 +47,14 @@ public class Player : MonoBehaviour
 
     public void Move(Vector2Int _direction)
     {
-        if (m_currentMovement <= 0) return;
         transform.position += (Vector3)(Vector2)_direction; //  What the hell is this.
         m_currentMovement--;
         m_onMove.Invoke();
+
+        if (m_currentMovement <= 0)
+        {
+            onTurnEnd.Invoke();
+            m_currentMovement = m_movementPerTurn;
+        }
     }
 }

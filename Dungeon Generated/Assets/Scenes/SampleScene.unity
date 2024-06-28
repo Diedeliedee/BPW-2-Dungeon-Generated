@@ -169,6 +169,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b25fe28b5d2f8843ab525488d3b6df1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_movementPerTurn: 10
+  m_onMove:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &208924094
 GameObject:
   m_ObjectHideFlags: 0
@@ -675,6 +679,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_groundTilemap: {fileID: 791304832}
   m_groundTile: {fileID: 11400000, guid: dc8cb0062f9144b46b42b44684a7f52d, type: 2}
+  m_entities: {fileID: 1292900743}
 --- !u!1 &837001964
 GameObject:
   m_ObjectHideFlags: 0

@@ -32,7 +32,7 @@ public class GameManager : MonoBehaviour
                 break;
 
             case State.RUNNING:
-
+                m_dungeon.Tick();
                 break;
         }
     }
