@@ -44,7 +44,8 @@ namespace Joeri.Tools.Movement
             /// </summary>
             public Vector3 CalculateVelocity(float drag, float deltaTime)
             {
-                velocity = Vector3.ClampMagnitude(velocity, velocity.magnitude - drag * deltaTime);
+                drag        = Mathf.Abs(drag);
+                velocity    = Vector3.ClampMagnitude(velocity, velocity.magnitude - drag * deltaTime);
                 return velocity;
             }
 

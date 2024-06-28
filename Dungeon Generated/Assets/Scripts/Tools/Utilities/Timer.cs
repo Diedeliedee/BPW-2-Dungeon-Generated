@@ -15,9 +15,14 @@ namespace Joeri.Tools
         public bool hasReached => timer >= time;
         public float percent  => GetPercent();
 
-        public Timer(float time)
+        public Timer()
         {
-            this.time = time;
+            time = 0f;
+        }
+
+        public Timer(float _time)
+        {
+            time = _time;
         }
 
         public bool HasReached(float deltaTime)

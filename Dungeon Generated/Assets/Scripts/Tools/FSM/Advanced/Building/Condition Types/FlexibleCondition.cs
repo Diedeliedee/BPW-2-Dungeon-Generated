@@ -1,16 +1,19 @@
-﻿public class FlexibleCondition : ICondition
+﻿namespace Joeri.Tools.Structure.StateMachine.Advanced
 {
-    private ICondition.Condition m_condition    = null;
-    private StateRequest m_stateRequest         = null;
-
-    public ICondition.Condition condition   => m_condition;
-    public System.Type state                => m_stateRequest.Invoke();
-
-    public FlexibleCondition(ICondition.Condition _condition, StateRequest _stateRequest)
+    public class FlexibleCondition : ICondition
     {
-        m_condition     = _condition;
-        m_stateRequest  = _stateRequest;
-    }
+        private ICondition.Condition m_condition    = null;
+        private StateRequest m_stateRequest         = null;
 
-    public delegate System.Type StateRequest();
+        public ICondition.Condition condition   => m_condition;
+        public System.Type state                => m_stateRequest.Invoke();
+
+        public FlexibleCondition(ICondition.Condition _condition, StateRequest _stateRequest)
+        {
+            m_condition     = _condition;
+            m_stateRequest  = _stateRequest;
+        }
+
+        public delegate System.Type StateRequest();
+    }
 }

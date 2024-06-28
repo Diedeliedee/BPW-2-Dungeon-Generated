@@ -49,7 +49,8 @@ namespace Joeri.Tools.Movement
                 var magnitude = Mathf.Abs(velocity);
                 var direction = velocity / magnitude;
 
-                magnitude -= drag * deltaTime;
+                drag        = Mathf.Abs(drag);
+                magnitude   -= drag * deltaTime;
                 return direction * magnitude;
             }
 

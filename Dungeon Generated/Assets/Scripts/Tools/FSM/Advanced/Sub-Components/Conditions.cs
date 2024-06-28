@@ -9,6 +9,11 @@
             conditions = _conditions;
         }
 
+        public Conditions()
+        {
+            conditions = new ICondition[0];
+        }
+
         /// <summary>
         /// Runs the predicate of every condition listed in the array of this container, and retrieves the desired state based on that.
         /// Conditions that have been inserted earlier in the building process have higher priority.
