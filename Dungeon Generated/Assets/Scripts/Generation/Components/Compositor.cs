@@ -5,12 +5,14 @@ namespace DungeonGeneration
 {
     public class Compositor
     {
-        public Dictionary<Vector2Int, Tile> GetDungeonComposite(List<Room> rooms, List<Room> corridors)
+        public Dictionary<Vector2Int, Tile> GetDungeonComposite(IEnumerable<Room> rooms, IEnumerable<Room> corridors)
         {
             var composite   = new Dictionary<Vector2Int, Tile>();
-            var all         = rooms;
+            var all         = new List<Room>();
 
+            all.AddRange(rooms);
             all.AddRange(corridors);
+
             foreach (var room in all)
             {
                 for (int x = 0; x < room.width; x++)

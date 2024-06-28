@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using Joeri.Tools.Utilities;
 
 namespace DungeonGeneration
 {
@@ -15,9 +14,12 @@ namespace DungeonGeneration
         private Spanner m_spanner           = new();
         private Corridorer m_corrider       = new();
         private Includer m_includer         = new();
+        private Compositor m_compositor     = new();
 
-        public bool Iterate(GenerationSettings _settings)
+        public bool Iterate(GenerationSettings _settings, out Dictionary<Vector2Int, Tile> _composite)
         {
+            _composite = null;
+
             switch (m_stage)
             {
                 case Stage.ROOM_SPAWNING:
@@ -53,8 +55,13 @@ namespace DungeonGeneration
 
                 case Stage.ROOM_INCLUDING:
                     m_includer.IncludeIntersectingRooms(m_corrider.corridors, m_spawner.rooms);
-                    m_stage = Stage.ROOM_INCLUDING;
+                    m_stage = Stage.ROOM_COMPOSITING;
                     break;
+
+                case Stage.ROOM_COMPOSITING:
+                    _composite  = m_compositor.GetDungeonComposite(m_includer.intersectingRooms, m_corrider.corridors);
+                    m_stage     = Stage.FINISHED;
+                    return true;
             }
             return false;
         }
@@ -78,7 +85,8 @@ namespace DungeonGeneration
             ROOM_SPANNING,
             ROOM_CORRIDORING,
             ROOM_INCLUDING,
-            Wait,
+            ROOM_COMPOSITING,
+            FINISHED
         }
     }
 }

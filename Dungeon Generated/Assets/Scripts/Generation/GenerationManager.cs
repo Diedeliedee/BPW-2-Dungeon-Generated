@@ -1,5 +1,6 @@
 using DungeonGeneration;
 using Joeri.Tools;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -17,16 +18,17 @@ public class GenerationManager : MonoBehaviour
 
     private void Awake()
     {
-        m_iterationTimer = new(m_iterationTime);
-        m_generator = new();
+        m_iterationTimer    = new(m_iterationTime);
+        m_generator         = new();
     }
 
-    private void Update()
+    public bool Iterate(out Dictionary<Vector2Int, Tile> _composite)
     {
-        if (!m_iterationTimer.ResetOnReach(Time.deltaTime)) return;
-        m_generator.Iterate(settings);
+        _composite = null;
 
-
+        if (!m_iterationTimer.ResetOnReach(Time.deltaTime)) return false;
+        if (!m_generator.Iterate(settings, out _composite)) return false;
+                                                            return true;
     }
 
     private void OnDrawGizmosSelected()
