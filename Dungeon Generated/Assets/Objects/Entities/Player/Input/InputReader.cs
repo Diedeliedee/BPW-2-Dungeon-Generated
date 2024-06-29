@@ -10,6 +10,9 @@ public class InputReader : MonoBehaviour
     public bool movementPressed         => m_actions.Player.Movement.triggered;
     public Vector2 movementDirection    => m_actions.Player.Movement.ReadValue<Vector2>();
 
+    public bool selectorPressed => m_actions.Player.Selector.triggered;
+    public Vector2 selectorDirection => m_actions.Player.Selector.ReadValue<Vector2>();
+
     private void Awake()
     {
         m_actions = new PlayerInputActions();

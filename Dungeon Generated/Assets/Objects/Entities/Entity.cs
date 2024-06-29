@@ -5,13 +5,17 @@ using UnityEngine.Events;
 public abstract class Entity : MonoBehaviour, ITurnReceiver, ITileOccupier
 {
     [Header("Properties:")]
-    [SerializeField] protected int m_movementPerTurn = 10;
+    [SerializeField] protected int m_maxHealth          = 3;
+    [SerializeField] protected int m_movementPerTurn    = 10;
 
     [Header("Events:")]
     [SerializeField] protected UnityEvent m_onMove;
+    [SerializeField] protected UnityEvent<int, int> m_onDamage;
+    [SerializeField] protected UnityEvent m_onDeath;
 
     //  Run-time:
     protected int m_currentMovement = 10;
+    protected int m_currentHealth   = 3;
 
     //  Events:
     protected EventWrapper m_onTurnEnd = new();
@@ -37,24 +41,20 @@ public abstract class Entity : MonoBehaviour, ITurnReceiver, ITileOccupier
 
     public abstract void DuringTurn();
 
-    public bool Move(Vector2Int _direction)
+    public bool Move(Vector2Int _direction, out MovementCallBack _callback)
     {
-        if (!m_dungeon.RequestMoveTo(this, coordinates + _direction)) return false;
+        var movementRequest = new MovementRequest
+        {
+            requestingEntity    = this,
+            originTile          = coordinates,
+            targetTile          = coordinates + _direction
+        };
+
+        if (!m_dungeon.RequestMoveTo(movementRequest, out _callback)) return false;
 
         m_currentMovement--;
         m_onMove.Invoke();
         return true;
-    }
-
-    protected Vector2Int ProcessDesiredInput(Vector2 _direction)
-    {
-        var processedDirection  = Vector2Int.zero;
-
-        if      (_direction.x > 0.5f)   processedDirection = Vector2Int.right;
-        else if (_direction.x < -0.5f)  processedDirection = Vector2Int.left;
-        else if (_direction.y > 0.5f)   processedDirection = Vector2Int.up;
-        else if (_direction.y < -0.5f)  processedDirection = Vector2Int.down;
-        return processedDirection;
     }
 
     public void Snap()
@@ -65,6 +65,12 @@ public abstract class Entity : MonoBehaviour, ITurnReceiver, ITileOccupier
 
     public void Damage(int _damage)
     {
-        Debug.Log("Ouch!");
+        Debug.Log("Ouch");
+
+        m_currentHealth -= _damage;
+
+        if (m_currentHealth < 0) m_currentHealth = 0;
+        m_onDamage.Invoke(m_currentHealth, m_maxHealth);
+        if (m_currentHealth == 0) m_onDeath.Invoke();
     }
 }

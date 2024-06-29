@@ -14,8 +14,8 @@ public class DungeonManager : MonoBehaviour
     [Space]
     [SerializeField] private Player m_player;
 
-    //  THE Tilemap:
-    private Dictionary<Vector2Int, Tile> m_tileMap;
+    //  Sub-components:
+    private NavigationManager m_navigation = new();
 
     //  Entity cache:
     private Queue<ITurnReceiver> m_turnReceivers    = new();
@@ -33,27 +33,17 @@ public class DungeonManager : MonoBehaviour
         {
             m_groundTilemap.SetTile(new Vector3Int(pair.Key.x, pair.Key.y, 0), m_groundTile);
         }
-        m_tileMap = _composite;
 
-        //  Registering the entities.
+        //  Registering entities in the turn order.
         for (int i = 0; i < entities.Length; i++)
         {
-            //  Registering in the turn order.
             m_turnReceivers.Enqueue(entities[i]);
-
-            //  Registering to a tile.
-            if (!m_tileMap.TryGetValue(entities[i].coordinates, out Tile _tile))
-            {
-                Debug.LogWarning($"Warning: Entity: {entities[i].gameObject.name} is standing outside of bounds, collision disables.");
-            }
-            else
-            {
-                m_tileMap[entities[i].coordinates].occupation = entities[i];
-            }
-
-            //  Snap entities if they're not aligned on thegrid in editor.
-            entities[i].Snap();
         }
+
+        //  Registering entities in the tile map.
+        m_navigation.RegisterTileMap(_composite);
+        m_navigation.RegisterEntities(entities);
+
     }
 
     public void Tick()
@@ -79,39 +69,8 @@ public class DungeonManager : MonoBehaviour
 
     }
 
-    public bool RequestMoveTo(Entity _entity, Vector2Int _coordinates)
+    public bool RequestMoveTo(MovementRequest _request, out MovementCallBack _callback)
     {
-        var entityInBounds = m_tileMap.TryGetValue(_entity.coordinates, out Tile _currentTile);
-        var targetInBounds = m_tileMap.TryGetValue(_coordinates, out Tile _targetTile);
-
-        void ConfirmMove()
-        {
-            _entity.coordinates     = _coordinates;
-            _currentTile.occupation = null;
-            _targetTile.occupation  = _entity;
-        }
-
-        //  If the entity is standing out of bounds, permit any movement.
-        if (!entityInBounds)
-        {
-            ConfirmMove();
-            return true;
-        }
-
-        //  If the target tile is out of bounds, disallow movement
-        if (!targetInBounds)
-        {
-            return false;
-        }
-
-        //  If the target tile is occupied, disallow movement.
-        if (_targetTile.occupation != null)
-        {
-            return false;
-        }
-
-        //  Permit movement if not of the guard clauses are true.
-        ConfirmMove();
-        return true;
+        return m_navigation.RequestMoveTo(_request, out _callback);
     }
 }

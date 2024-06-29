@@ -19,7 +19,7 @@ public class Player : Entity
     {
         if (m_input.movementPressed)
         {
-            Move(ProcessDesiredInput(m_input.movementDirection));
+            Move(NavigationManager.ProcessDesiredInput(m_input.movementDirection), out MovementCallBack _callback);
         }
 
         if (m_currentMovement <= 0)

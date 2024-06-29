@@ -28,7 +28,6 @@ public class Bower : Entity
 
     public override void DuringTurn()
     {
-        var distanceToPlayer = Vector2.Distance(transform.position, m_dungeon.player.transform.position);
         switch (m_state)
         {
             case State.IDLE:
@@ -36,10 +35,23 @@ public class Bower : Entity
                 break;
 
             case State.COMBAT:
+                //  To prevent lightning fast stuff, wait some time before each choice.
                 if (!m_choiceTimer.ResetOnReach(Time.deltaTime)) break;
 
-                if (!Move(ProcessDesiredInput((m_dungeon.player.transform.position - transform.position).normalized)))
+                //  Calculate desider input.
+                var direction   = (m_dungeon.player.transform.position - transform.position).normalized;
+                var input       = NavigationManager.ProcessDesiredInput(direction);
+
+                //  If we can't move in the desired input..
+                if (!Move(input, out MovementCallBack _callback))
                 {
+                    //  And that move is caused by the player standing right beside us..
+                    if (_callback.condition == MovementCallBack.Condition.OCCUPIED && _callback.targetTile.occupation is Player _player)
+                    {
+                        //  Damage the player.
+                        _player.Damage(5);
+                    }
+
                     m_currentMovement = m_movementPerTurn;
                     onTurnEnd.Invoke();
                 }
