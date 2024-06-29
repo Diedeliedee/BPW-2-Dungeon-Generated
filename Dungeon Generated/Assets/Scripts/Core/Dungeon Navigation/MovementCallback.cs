@@ -7,7 +7,8 @@
     {
         ACCESIBLE,
         OCCUPIED,
-        OUT_OF_BOUNDS
+        OUT_OF_BOUNDS,
+        OUT_OF_MOVEMENT,
     }
 }
 

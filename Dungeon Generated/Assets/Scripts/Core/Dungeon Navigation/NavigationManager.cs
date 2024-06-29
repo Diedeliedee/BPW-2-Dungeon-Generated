@@ -1,5 +1,6 @@
 ﻿
 using System.Collections.Generic;
+using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 
 public partial class NavigationManager
@@ -38,19 +39,19 @@ public partial class NavigationManager
         var entityInBounds = tileMap.TryGetValue(_request.originTile, out Tile _currentTile);
         var targetInBounds = tileMap.TryGetValue(_request.targetTile, out Tile _targetTile);
 
-        //  If the entity is standing out of bounds, permit any movement.
-        if (!entityInBounds)
-        {
-            _callback.condition     = MovementCallBack.Condition.ACCESIBLE;
-            _callback.targetTile    = _targetTile;
-
-            Move(_request.requestingEntity, _currentTile, _targetTile);
-            return true;
-        }
-
         //  If the target tile is out of bounds, disallow movement
         if (!targetInBounds)
         {
+            //  If the entity is standing out of bounds, permit any movement.
+            if (!entityInBounds)
+            {
+                _callback.condition = MovementCallBack.Condition.ACCESIBLE;
+                _callback.targetTile = _targetTile;
+
+                Move(_request.requestingEntity, _request.targetTile, _currentTile, _targetTile);
+                return true;
+            }
+
             _callback.condition = MovementCallBack.Condition.OUT_OF_BOUNDS;
 
             return false;
@@ -69,16 +70,21 @@ public partial class NavigationManager
         _callback.condition     = MovementCallBack.Condition.ACCESIBLE;
         _callback.targetTile    = _targetTile;
 
-        Move(_request.requestingEntity, _currentTile, _targetTile);
+        Move(_request.requestingEntity, _request.targetTile, _currentTile, _targetTile);
         return true;
     }
 
-    public void Move(Entity _entity, Tile _originTile, Tile _targetTile)
+    public bool TargetInBounds(Vector2Int _coordinates)
     {
-        _entity.coordinates = _targetTile.coordinates;
+        return tileMap.TryGetValue(_coordinates, out Tile _targetTile);
+    }
+
+    public void Move(Entity _entity, Vector2Int _destination, Tile _originTile, Tile _targetTile)
+    {
+        _entity.coordinates = _destination;
 
         if (_originTile != null)    _originTile.occupation = null;
-                                    _targetTile.occupation = _entity;
+        if (_targetTile != null)    _targetTile.occupation = _entity;
     }
 
     public static Vector2Int ProcessDesiredInput(Vector2 _direction)

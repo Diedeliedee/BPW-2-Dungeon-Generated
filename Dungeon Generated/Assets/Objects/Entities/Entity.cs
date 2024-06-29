@@ -7,6 +7,7 @@ public abstract class Entity : MonoBehaviour, ITurnReceiver, ITileOccupier
     [Header("Properties:")]
     [SerializeField] protected int m_maxHealth          = 3;
     [SerializeField] protected int m_movementPerTurn    = 10;
+    [SerializeField] protected int m_actionsPerTurn     = 1;
 
     [Header("Events:")]
     [SerializeField] protected UnityEvent m_onMove;
@@ -16,6 +17,7 @@ public abstract class Entity : MonoBehaviour, ITurnReceiver, ITileOccupier
     //  Run-time:
     protected int m_currentMovement = 10;
     protected int m_currentHealth   = 3;
+    protected int m_currentActions  = 1;
 
     //  Events:
     protected EventWrapper m_onTurnEnd = new();
@@ -43,6 +45,17 @@ public abstract class Entity : MonoBehaviour, ITurnReceiver, ITileOccupier
 
     public bool Move(Vector2Int _direction, out MovementCallBack _callback)
     {
+        //  Immediately disallow movement if no stamina is left.
+        if (m_currentMovement == 0)
+        {
+            _callback = new MovementCallBack
+            {
+                condition = MovementCallBack.Condition.OUT_OF_MOVEMENT
+            };
+            return false;
+        }
+
+        //  Create a new movement request for the dungeon manager.
         var movementRequest = new MovementRequest
         {
             requestingEntity    = this,
@@ -50,8 +63,10 @@ public abstract class Entity : MonoBehaviour, ITurnReceiver, ITileOccupier
             targetTile          = coordinates + _direction
         };
 
+        //  Request the dungeon manager to move us.
         if (!m_dungeon.RequestMoveTo(movementRequest, out _callback)) return false;
 
+        //  If it succeeds, take neccesary precautions.
         m_currentMovement--;
         m_onMove.Invoke();
         return true;

@@ -73,4 +73,9 @@ public class DungeonManager : MonoBehaviour
     {
         return m_navigation.RequestMoveTo(_request, out _callback);
     }
+
+    public bool TargetInBounds(Vector2Int _coordinates)
+    {
+        return m_navigation.TargetInBounds(_coordinates);
+    }
 }
