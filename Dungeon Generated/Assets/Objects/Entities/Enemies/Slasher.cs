@@ -2,7 +2,7 @@ using Joeri.Tools;
 using Joeri.Tools.Debugging;
 using UnityEngine;
 
-public class Bower : Entity
+public class Slasher : Entity
 {
     [SerializeField] private float m_aggroDistance = 5f;
     [SerializeField] private float m_choiceTime = 0.5f;
@@ -17,7 +17,7 @@ public class Bower : Entity
 
     public override void OnTurnStart()
     {
-        Debug.Log("Bower's Turn!!");
+        Debug.Log("Slasher's Turn!!");
 
         var distanceToPlayer = Vector2.Distance(transform.position, m_dungeon.player.transform.position);
 
