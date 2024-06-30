@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+/*
 public class RoomTester : MonoBehaviour
 {
     [SerializeField] private int m_width    = 4;
@@ -59,3 +60,4 @@ public class RoomTester : MonoBehaviour
         else Room.Draw(m_color, m_width, m_height);
     }
 }
+*/

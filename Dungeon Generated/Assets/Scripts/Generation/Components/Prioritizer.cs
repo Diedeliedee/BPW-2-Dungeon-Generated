@@ -28,15 +28,5 @@ namespace DungeonGeneration
                 m_mainRooms.Add(_rooms[i]);
             }
         }
-
-        public void Draw(Color _color)
-        {
-            _color.r = 1f;
-
-            for (int i = 0; i < m_mainRooms.Count; i++)
-            {
-                m_mainRooms[i].Draw(_color);
-            }
-        }
     }
 }

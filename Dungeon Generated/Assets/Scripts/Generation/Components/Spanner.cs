@@ -6,14 +6,15 @@ namespace DungeonGeneration
 {
     public class Spanner
     {
-        public Dictionary<int, Room> m_visited = new();
+        public Dictionary<int, MainRoom> m_visited = new();
 
-        public void Setup(Room _room)
+        public void SelectStartRoom(MainRoom _room)
         {
+            _room.visited = true;
             m_visited.Add(_room.GetHashCode(), _room);
         }
 
-        public bool IterateSpanningTree(List<Room> _rooms)
+        public bool IterateSpanningTree(List<MainRoom> _rooms)
         {
             if (m_visited.Count == _rooms.Count)
             {
@@ -26,13 +27,12 @@ namespace DungeonGeneration
 
             m_visited.Add(connection.end.GetHashCode(), connection.end);
             return false;
-
         }
 
         /// <returns>The closest connection to an </returns>
-        private Room.Connection GetShortestConnectionAvailable()
+        private MainRoom.Connection GetShortestConnectionAvailable()
         {
-            Room.Connection shortestConnection = null;
+            MainRoom.Connection shortestConnection = null;
 
             foreach (var room in m_visited.Values)
             {
@@ -57,21 +57,6 @@ namespace DungeonGeneration
             }
 
             return shortestConnection;
-        }
-
-        public void Draw(Color _color)
-        {
-            foreach (var room in m_visited.Values)
-            {
-                //  Draw every visited room in the given color.
-                room.Draw(_color);
-
-                //  Also draw evey connection as a live in the given color.
-                foreach (var connection in room.mainPath)
-                {
-                    GizmoTools.DrawLine(room.center, connection.end.center, _color, 1f);
-                }
-            }
         }
     }
 

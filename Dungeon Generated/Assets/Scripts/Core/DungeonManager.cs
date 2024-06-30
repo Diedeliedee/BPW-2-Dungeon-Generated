@@ -1,6 +1,7 @@
 ﻿
 
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -10,12 +11,13 @@ public class DungeonManager : MonoBehaviour
     [SerializeField] private Tilemap m_groundTilemap;
     [SerializeField] private TileBase m_groundTile;
     [Space]
-    [SerializeField] private Transform m_entities;
+    [SerializeField] private Transform m_entityParent;
     [Space]
     [SerializeField] private Player m_player;
 
     //  Sub-components:
-    private NavigationManager m_navigation = new();
+    private NavigationManager m_navigation  = new();
+    private List<Entity> m_entities         = new();
 
     //  Entity cache:
     private Queue<ITurnReceiver> m_turnReceivers    = new();
@@ -26,7 +28,14 @@ public class DungeonManager : MonoBehaviour
 
     public void CreateFromComposite(Dictionary<Vector2Int, Tile> _composite)
     {
-        var entities = m_entities.GetComponentsInChildren<Entity>();
+        //  Gather all the entities from their rooms.
+        m_entities = FindObjectsByType<Entity>(FindObjectsSortMode.InstanceID).ToList();
+
+        //  Drag all entities to a separate parent.
+        foreach (var entity in m_entities)
+        {
+            entity.transform.parent = m_entityParent;
+        }
 
         //  Decorating the scene based on the composite.
         foreach (var pair in _composite)
@@ -35,15 +44,14 @@ public class DungeonManager : MonoBehaviour
         }
 
         //  Registering entities in the turn order.
-        for (int i = 0; i < entities.Length; i++)
+        for (int i = 0; i < m_entities.Count; i++)
         {
-            m_turnReceivers.Enqueue(entities[i]);
+            m_turnReceivers.Enqueue(m_entities[i]);
         }
 
         //  Registering entities in the tile map.
         m_navigation.RegisterTileMap(_composite);
-        m_navigation.RegisterEntities(entities);
-
+        m_navigation.RegisterEntities(m_entities);
     }
 
     public void Tick()

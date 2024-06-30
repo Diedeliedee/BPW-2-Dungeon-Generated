@@ -1,33 +1,31 @@
 ﻿using UnityEngine;
 using Joeri.Tools.Utilities;
-using System.Collections.Generic;
 
 namespace DungeonGeneration
 {
     public class Spawner
     {
-        private List<Room> m_rooms = new();
+        private int m_roomsSpawned = 0;
 
-        public List<Room> rooms => m_rooms;
-
-        public bool IterateSpawningRooms(GenerationSettings _settings)
+        public bool IterateSpawningRooms(GenerationSettings _settings, Transform _parent)
         {
+            //  Configuring random room conditions.
             var position    = Util.RandomCirclePoint() * _settings.circleRadius;
             var width       = Random.Range(_settings.minRoomWidth, _settings.maxRoomWidth);
             var height      = Random.Range(_settings.minRoomHeight, _settings.maxRoomHeight);
 
-            m_rooms.Add(new Room(width, height, position));
+            //  Creating the game object.
+            var empty   = new GameObject("Random Liminal Room", typeof(Room));
+            var room    = empty.GetComponent<Room>();
 
-            if (m_rooms.Count == _settings.rooms)   return true;
+            //  Configuring the game object.
+            empty.transform.parent = _parent;
+            room.Setup(width, height, position);
+
+            //  State management.
+            m_roomsSpawned++;
+            if (m_roomsSpawned == _settings.rooms)  return true;
                                                     return false;
-        }
-
-        public void Draw(Color _color)
-        {
-            for (int i = 0; i < m_rooms.Count; i++)
-            {
-                m_rooms[i].Draw(_color);
-            }
         }
     }
 }

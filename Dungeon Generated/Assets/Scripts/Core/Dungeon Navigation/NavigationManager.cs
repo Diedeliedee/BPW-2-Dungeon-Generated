@@ -12,10 +12,10 @@ public partial class NavigationManager
         tileMap = _map;
     }
 
-    public void RegisterEntities(Entity[] _entities)
+    public void RegisterEntities(List<Entity> _entities)
     {
         //  Registering the entities.
-        for (int i = 0; i < _entities.Length; i++)
+        for (int i = 0; i < _entities.Count; i++)
         {
                         //  Registering to a tile.
             if (!tileMap.TryGetValue(_entities[i].coordinates, out Tile _tile))

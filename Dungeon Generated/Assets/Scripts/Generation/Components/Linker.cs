@@ -1,9 +1,5 @@
 ﻿using DelaunatorSharp;
-using Joeri.Tools.Debugging;
-using Joeri.Tools.Utilities;
-using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace DungeonGeneration
 {
@@ -11,7 +7,7 @@ namespace DungeonGeneration
     {
         private Delaunator m_delaunator = null;
 
-        public void CreateDelenautor(List<Room> _rooms)
+        public void CreateDelenautor(List<MainRoom> _rooms)
         {
             //  Constructing an array of Delaunator points filled with rooms.
             var points = new IPoint[_rooms.Count];
@@ -26,10 +22,10 @@ namespace DungeonGeneration
             //  Connect all the rooms with each other.
             foreach (var triangle in m_delaunator.GetTriangles())
             {
-                var rooms = new List<Room>();
+                var rooms = new List<MainRoom>();
 
                 //  Converting casting every point in the triangle back into a room.
-                foreach (var point in triangle.Points) rooms.Add((Room)point);
+                foreach (var point in triangle.Points) rooms.Add((MainRoom)point);
 
                 //  Every room in the triangle is connected with two opposing rooms.
                 //  Since a room link is one-sided, linking needs to be done from both ways.
@@ -41,21 +37,6 @@ namespace DungeonGeneration
 
                 rooms[2].LinkRoom(rooms[0]);
                 rooms[2].LinkRoom(rooms[1]);
-            }
-        }
-
-        public void Draw(Color _color)
-        {
-            if (m_delaunator == null) return;
-
-            var edges = m_delaunator.GetEdges();
-
-            foreach (var edge in edges)
-            {
-                var point1 = new Vector2((float)edge.P.X, (float)edge.P.Y);
-                var point2 = new Vector2((float)edge.Q.X, (float)edge.Q.Y);
-
-                GizmoTools.DrawLine(point1, point2, _color, 0.75f);
             }
         }
     }

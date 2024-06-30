@@ -5,11 +5,7 @@ namespace DungeonGeneration
 {
     public class Corridorer
     {
-        private List<Room> m_corridors = new();
-
-        public List<Room> corridors => m_corridors;
-
-        public void IterateCorridoring(List<Room> _rooms, GenerationSettings _settings)
+        public void IterateCorridoring(List<MainRoom> _rooms, List<Corridor> _corridors, GenerationSettings _settings)
         {
             foreach (var room in _rooms)
             {
@@ -21,27 +17,19 @@ namespace DungeonGeneration
                     var verticalDimensions      = GetCorridorDimensions(1, connection, _settings.corridorExtents);
                     var verticalCenter          = GetCenter(1, connection);
 
-                    var horizontalCorridor  = new Room(horizontalDimensions.x, horizontalDimensions.y, horizontalCenter);
-                    var verticalCorridor    = new Room(verticalDimensions.x, verticalDimensions.y, verticalCenter);
+                    var horizontalCorridor  = new Corridor(horizontalDimensions.x, horizontalDimensions.y, horizontalCenter);
+                    var verticalCorridor    = new Corridor(verticalDimensions.x, verticalDimensions.y, verticalCenter);
 
                     horizontalCorridor.Snap();
                     verticalCorridor.Snap();
 
-                    m_corridors.Add(horizontalCorridor);
-                    m_corridors.Add(verticalCorridor);
+                    _corridors.Add(horizontalCorridor);
+                    _corridors.Add(verticalCorridor);
                 }
             }
         }
 
-        public void Draw(Color _color)
-        {
-            for (int i = 0; i < m_corridors.Count; i++)
-            {
-                m_corridors[i].Draw(_color);
-            }
-        }
-
-        public Vector2Int GetCorridorDimensions(int _type, Room.Connection _connection, int _extents)
+        public Vector2Int GetCorridorDimensions(int _type, MainRoom.Connection _connection, int _extents)
         {
             var dimensions = Vector2Int.zero;
 
@@ -60,7 +48,7 @@ namespace DungeonGeneration
             return dimensions;
         }
 
-        public Vector2 GetCenter(int _type, Room.Connection _connection)
+        public Vector2 GetCenter(int _type, MainRoom.Connection _connection)
         {
             var center = Vector2.zero;
 

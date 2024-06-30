@@ -5,21 +5,17 @@ namespace DungeonGeneration
 {
     public class Compositor
     {
-        public Dictionary<Vector2Int, Tile> GetDungeonComposite(IEnumerable<Room> rooms, IEnumerable<Room> corridors)
+        public Dictionary<Vector2Int, Tile> GetDungeonComposite(IEnumerable<ICompositePart> _compositeParts)
         {
-            var composite   = new Dictionary<Vector2Int, Tile>();
-            var all         = new List<Room>();
+            var composite = new Dictionary<Vector2Int, Tile>();
 
-            all.AddRange(rooms);
-            all.AddRange(corridors);
-
-            foreach (var room in all)
+            foreach (var part in _compositeParts)
             {
-                for (int x = 0; x < room.width; x++)
+                for (int x = 0; x < part.width; x++)
                 {
-                    for (int y = 0; y < room.height; y++)
+                    for (int y = 0; y < part.height; y++)
                     {
-                        var coordinates = new Vector2Int(room.xPos + x, room.yPos + y);
+                        var coordinates = new Vector2Int(part.xPos + x, part.yPos + y);
 
                         if (composite.ContainsKey(coordinates)) continue;
                         composite.Add(coordinates, new(coordinates));

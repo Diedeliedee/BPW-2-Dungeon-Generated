@@ -5,30 +5,21 @@ namespace DungeonGeneration
 {
     public class Includer
     {
-        private Dictionary<int, Room> m_intersectingRooms = new();
-
-        public IEnumerable<Room> intersectingRooms => m_intersectingRooms.Values;
-
-        public void IncludeIntersectingRooms(List<Room> corridors, List<Room> rooms)
+        public void IncludeIntersectingRooms(List<Corridor> _corridors, List<Room> _rooms, List<Room> _includedRooms)
         {
-            foreach (var corridor in corridors)
-            {
-                foreach (var room in rooms)
-                {
-                    if (!corridor.OverlapsWith(room))                           continue;
-                    if (m_intersectingRooms.ContainsKey(room.GetHashCode()))    continue;
+            var intersectingRooms = new Dictionary<int, Room>();
 
-                    m_intersectingRooms.Add(room.GetHashCode(), room);
+            foreach (var corridor in _corridors)
+            {
+                foreach (var room in _rooms)
+                {
+                    if (!corridor.OverlapsWith(room))                       continue;
+                    if (intersectingRooms.ContainsKey(room.GetHashCode()))  continue;
+
+                    intersectingRooms.Add(room.GetHashCode(), room);
                 }
             }
-        }
-
-        public void Draw(Color _color)
-        {
-            foreach (var room in m_intersectingRooms.Values)
-            {
-                room.Draw(_color);
-            }
+            _includedRooms.AddRange(intersectingRooms.Values);
         }
     }
 }

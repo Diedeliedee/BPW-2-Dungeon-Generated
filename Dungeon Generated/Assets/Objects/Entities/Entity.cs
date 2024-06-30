@@ -36,7 +36,7 @@ public abstract class Entity : MonoBehaviour, ITurnReceiver, ITileOccupier
 
     protected virtual void Awake()
     {
-            m_dungeon = GetComponentInParent<DungeonManager>();
+        m_dungeon = FindObjectOfType<DungeonManager>();
     }
 
     public abstract void OnTurnStart();
