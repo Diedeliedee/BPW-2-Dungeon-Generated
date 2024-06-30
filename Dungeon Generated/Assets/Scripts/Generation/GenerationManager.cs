@@ -11,10 +11,14 @@ public class GenerationManager : MonoBehaviour
     [SerializeField] private Color m_roomColor      = Color.white;
     [SerializeField] private float m_iterationTime  = 0.1f;
     [Space]
+    [SerializeField] private UnityEvent m_onStart;
+    [SerializeField] private UnityEvent<float> m_duringGeneration;
     [SerializeField] private UnityEvent m_onFinish = null;
 
     private Timer m_iterationTimer          = null;
     private DungeonGenerator m_generator    = null;
+
+    
 
     private void Awake()
     {
@@ -22,13 +26,20 @@ public class GenerationManager : MonoBehaviour
         m_generator         = new();
     }
 
+    private void Start()
+    {
+        m_onStart.Invoke();
+    }
+
     public bool Iterate(out Dictionary<Vector2Int, Tile> _composite)
     {
         _composite = null;
 
+        m_duringGeneration.Invoke(m_generator.percent);
         if (!m_iterationTimer.ResetOnReach(Time.deltaTime)) return false;
         if (!m_generator.Iterate(settings, out _composite)) return false;
-                                                            return true;
+        m_onFinish.Invoke();
+        return true;
     }
 
     private void OnDrawGizmosSelected()

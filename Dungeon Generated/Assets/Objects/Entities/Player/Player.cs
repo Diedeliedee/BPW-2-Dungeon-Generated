@@ -61,6 +61,11 @@ public class Player : Entity
                 {
                     m_highlighter.Tick(NavigationManager.ProcessDesiredInput(m_input.selectorDirection));
                 }
+
+                if (Input.GetKeyDown(KeyCode.Return))   //  Debug purposes.
+                {
+                    
+                }
                 break;
         }
 

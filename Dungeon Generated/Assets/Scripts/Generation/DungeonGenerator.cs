@@ -5,7 +5,7 @@ namespace DungeonGeneration
 {
     public class DungeonGenerator
     {
-        private Stage m_stage           = default;
+        private Stage m_stage = Stage.ROOM_SPAWNING;
 
         private Spawner m_spawner           = new();
         private Separator m_separator       = new();
@@ -15,6 +15,17 @@ namespace DungeonGeneration
         private Corridorer m_corrider       = new();
         private Includer m_includer         = new();
         private Compositor m_compositor     = new();
+
+        public float percent
+        {
+            get
+            {
+                int phases = 9;
+                int currentPhase = (int)m_stage;
+
+                return (float)currentPhase / (float)phases;
+            }
+        }
 
         public bool Iterate(GenerationSettings _settings, out Dictionary<Vector2Int, Tile> _composite)
         {
@@ -78,15 +89,15 @@ namespace DungeonGeneration
 
         private enum Stage
         {
-            ROOM_SPAWNING,
-            ROOM_SEPARATION,
-            ROOM_PRIORITIZATION,
-            ROOM_LINKING,
-            ROOM_SPANNING,
-            ROOM_CORRIDORING,
-            ROOM_INCLUDING,
-            ROOM_COMPOSITING,
-            FINISHED
+            ROOM_SPAWNING       = 1,
+            ROOM_SEPARATION     = 2,
+            ROOM_PRIORITIZATION = 3,
+            ROOM_LINKING        = 4,
+            ROOM_SPANNING       = 5,
+            ROOM_CORRIDORING    = 6,
+            ROOM_INCLUDING      = 7,
+            ROOM_COMPOSITING    = 8,
+            FINISHED            = 9
         }
     }
 }
