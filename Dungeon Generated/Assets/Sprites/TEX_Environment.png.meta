@@ -424,6 +424,27 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: TEX_Sign
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1024
+        width: 1536
+        height: 1536
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 82d479eb71f6a1f4f858770299a0a179
+      internalID: 929472629
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -440,7 +461,6 @@ TextureImporter:
       TEX_Environment_10: 968969079
       TEX_Environment_11: 587562454
       TEX_Environment_12: 1590338806
-      TEX_Environment_13: -544264096
       TEX_Environment_14: 1928486157
       TEX_Environment_15: -852332479
       TEX_Environment_16: -1281397159
@@ -460,6 +480,7 @@ TextureImporter:
       TEX_Environment_7: 463765241
       TEX_Environment_8: -447724732
       TEX_Environment_9: -1700871828
+      TEX_Sign: -544264096
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

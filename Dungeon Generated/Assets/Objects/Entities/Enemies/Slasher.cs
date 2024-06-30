@@ -24,6 +24,8 @@ public class Slasher : Entity
         //  Deciding what to do this turn.
         if      (distanceToPlayer < m_aggroDistance)    m_state = State.COMBAT;
         else if (distanceToPlayer > m_aggroDistance)    m_state = State.IDLE;
+
+        m_onTurnStart.Invoke();
     }
 
     public override void DuringTurn()

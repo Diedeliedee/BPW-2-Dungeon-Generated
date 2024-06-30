@@ -1,6 +1,7 @@
 using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Player : Entity
 {
@@ -26,6 +27,7 @@ public class Player : Entity
     {
         Debug.Log("Player's Turn!!");
 
+        m_onTurnStart.Invoke();
         m_state = State.MOVING;
     }
 

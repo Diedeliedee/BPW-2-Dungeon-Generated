@@ -10,7 +10,8 @@ public abstract class Entity : MonoBehaviour, ITurnReceiver, ITileOccupier
     [SerializeField] protected int m_actionsPerTurn     = 1;
 
     [Header("Events:")]
-    [SerializeField] protected UnityEvent m_onMove;
+    [SerializeField] protected UnityEvent m_onTurnStart;
+    [SerializeField] protected UnityEvent<int> m_onMove;
     [SerializeField] protected UnityEvent<int, int> m_onDamage;
     [SerializeField] protected UnityEvent m_onDeath;
 
@@ -68,7 +69,7 @@ public abstract class Entity : MonoBehaviour, ITurnReceiver, ITileOccupier
 
         //  If it succeeds, take neccesary precautions.
         m_currentMovement--;
-        m_onMove.Invoke();
+        m_onMove.Invoke(m_currentMovement);
         return true;
     }
 
