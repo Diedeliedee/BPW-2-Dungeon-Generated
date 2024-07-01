@@ -56,16 +56,30 @@ public class DungeonManager : MonoBehaviour
 
     public void Tick()
     {
-        if (m_currentTurnReceiver == null)
+        int count = 0;
+
+        while (m_currentTurnReceiver == null)
         {
-            m_currentTurnReceiver = m_turnReceivers.Dequeue();
+            var next = m_turnReceivers.Dequeue();
+
+            if (!m_entities.Contains(next))
+            {
+                count++;
+                continue;
+            }
+
+            m_currentTurnReceiver = next;
             m_currentTurnReceiver.OnTurnStart();
             m_currentTurnReceiver.endTurnCallback.Subscribe(OnTurnEnd);
+
+            if (count >= 100)
+            {
+                Debug.LogError("No entities present in the turn order!!");
+                return;
+            }
         }
-        else
-        {
-            m_currentTurnReceiver.DuringTurn();
-        }
+
+        m_currentTurnReceiver.DuringTurn();
     }
 
     private void OnTurnEnd()
@@ -84,17 +98,22 @@ public class DungeonManager : MonoBehaviour
 
     public void AttackAt(Vector2Int _coordinates, int _damage)
     {
-        if (!m_navigation.TargetInBounds(_coordinates)) return;
+        if (!m_navigation.TryGetTile(_coordinates, out Tile _tile)) return;
 
-        var tile = m_navigation.tileMap[_coordinates];
+        if (_tile == null) return;
+        if (_tile.occupation == null) return;
+        _tile.occupation.Damage(_damage);
+    }
 
-        if (tile == null) return;
-        if (tile.occupation == null) return;
-        tile.occupation.Damage(_damage);
+    public void Deregister(Entity _entity)
+    {
+        m_entities.Remove(_entity);
+        m_navigation.TryGetTile(_entity.coordinates, out Tile _tile);
+        _tile.occupation = null;
     }
 
     public bool TargetInBounds(Vector2Int _coordinates)
     {
-        return m_navigation.TargetInBounds(_coordinates);
+        return m_navigation.TryGetTile(_coordinates, out Tile _tile);
     }
 }

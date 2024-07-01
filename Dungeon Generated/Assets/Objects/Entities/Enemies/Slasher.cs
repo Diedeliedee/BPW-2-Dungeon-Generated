@@ -65,6 +65,12 @@ public class Slasher : Entity
         }
     }
 
+    public override void Damage(int _damage)
+    {
+        m_dungeon.Deregister(this);
+        gameObject.SetActive(false);
+    }
+
     private void OnDrawGizmosSelected()
     {
         GizmoTools.DrawSphere(transform.position + new Vector3(0.5f, 0.5f, 0f), m_aggroDistance, Color.red, 0.25f);

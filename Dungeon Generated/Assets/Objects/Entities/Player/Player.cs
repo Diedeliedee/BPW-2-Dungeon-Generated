@@ -24,6 +24,17 @@ public class Player : Entity
         m_stateMachine = new(moving, selecting);
     }
 
+    public override void Damage(int _damage)
+    {
+        Debug.Log("Ouch");
+
+        currentHealth -= _damage;
+
+        if (currentHealth < 0) currentHealth = 0;
+        m_onDamage.Invoke(currentHealth, m_maxHealth);
+        if (currentHealth == 0) m_onDeath.Invoke();
+    }
+
     public override void DuringTurn()
     {
         m_stateMachine.Tick();

@@ -74,9 +74,9 @@ public partial class NavigationManager
         return true;
     }
 
-    public bool TargetInBounds(Vector2Int _coordinates)
+    public bool TryGetTile(Vector2Int _coordinates, out Tile _tile)
     {
-        return tileMap.TryGetValue(_coordinates, out Tile _targetTile);
+        return tileMap.TryGetValue(_coordinates, out _tile);
     }
 
     public void Move(Entity _entity, Vector2Int _destination, Tile _originTile, Tile _targetTile)

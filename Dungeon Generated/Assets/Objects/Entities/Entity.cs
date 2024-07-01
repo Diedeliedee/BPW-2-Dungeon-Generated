@@ -113,14 +113,5 @@ public abstract class Entity : MonoBehaviour, ITurnReceiver, ITileOccupier
         coordinates = coordinates;
     }
 
-    public void Damage(int _damage)
-    {
-        Debug.Log("Ouch");
-
-        currentHealth -= _damage;
-
-        if (currentHealth < 0) currentHealth = 0;
-        m_onDamage.Invoke(currentHealth, m_maxHealth);
-        if (currentHealth == 0) m_onDeath.Invoke();
-    }
+    public abstract void Damage(int _damage);
 }
