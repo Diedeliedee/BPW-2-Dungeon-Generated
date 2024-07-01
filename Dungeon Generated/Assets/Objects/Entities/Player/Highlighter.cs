@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class Highlighter : MonoBehaviour
 {
+    [SerializeField] private int m_maxRange = 3;
+
     public Vector2Int coordinates
     {
         get => new Vector2Int(Mathf.FloorToInt(transform.position.x), Mathf.FloorToInt(transform.position.y));
@@ -14,9 +16,12 @@ public class Highlighter : MonoBehaviour
         transform.position = new Vector3(_start.x, _start.y, 0f);
     }
 
-    public void Tick(Vector2Int _input)
+    public void Tick(Vector2Int _playerPos, Vector2Int _input)
     {
-        transform.position += new Vector3(_input.x, _input.y, 0f);
+        var newCoords = coordinates + _input;
+
+        if (Vector2Int.Distance(_playerPos, newCoords) > m_maxRange) return;
+        coordinates = newCoords;
     }
 
     public void Deactivate()

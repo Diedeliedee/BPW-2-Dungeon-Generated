@@ -33,7 +33,7 @@ public class Selecting : State
         }
         if (m_input.selectorPressed)
         {
-            m_highlighter.Tick(NavigationManager.ProcessDesiredInput(m_input.selectorDirection));
+            m_highlighter.Tick(m_player.coordinates, NavigationManager.ProcessDesiredInput(m_input.selectorDirection));
         }
         if (m_input.confirmedSelection)
         {
