@@ -30,7 +30,7 @@ namespace Joeri.Tools.Structure.StateMachine.Simple
         {
             if (m_activeState == null)
             {
-                Debug.LogError("Active state is not yet set. Possibly the Start() function has not been called yet.");
+                Debug.LogError("Active state is not yet set.");
                 return;
             }
 
@@ -57,7 +57,7 @@ namespace Joeri.Tools.Structure.StateMachine.Simple
             GizmoTools.DrawLabel(position, m_activeState.GetType().Name, Color.black);
 
             //  Drawing the gizmos of the current state, if it isn't null.
-            ((State)m_activeState).OnDrawGizmos();
+            m_activeState.OnDrawGizmos();
         }
     }
 }

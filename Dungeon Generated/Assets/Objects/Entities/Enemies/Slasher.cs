@@ -17,15 +17,13 @@ public class Slasher : Entity
 
     public override void OnTurnStart()
     {
-        Debug.Log("Slasher's Turn!!");
+        base.OnTurnStart();
 
         var distanceToPlayer = Vector2.Distance(transform.position, m_dungeon.player.transform.position);
 
         //  Deciding what to do this turn.
         if      (distanceToPlayer < m_aggroDistance)    m_state = State.COMBAT;
         else if (distanceToPlayer > m_aggroDistance)    m_state = State.IDLE;
-
-        m_onTurnStart.Invoke();
     }
 
     public override void DuringTurn()
@@ -54,13 +52,13 @@ public class Slasher : Entity
                         _player.Damage(5);
                     }
 
-                    m_currentMovement = m_movementPerTurn;
+                    currentMovement = m_movementPerTurn;
                     onTurnEnd.Invoke();
                 }
 
-                if (m_currentMovement <= 0)
+                if (currentMovement <= 0)
                 {
-                    m_currentMovement = m_movementPerTurn;
+                    currentMovement = m_movementPerTurn;
                     onTurnEnd.Invoke();
                 }
                 break;

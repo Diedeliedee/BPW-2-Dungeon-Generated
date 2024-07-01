@@ -8,17 +8,22 @@ public abstract class Entity : MonoBehaviour, ITurnReceiver, ITileOccupier
     [SerializeField] protected int m_maxHealth          = 3;
     [SerializeField] protected int m_movementPerTurn    = 10;
     [SerializeField] protected int m_actionsPerTurn     = 1;
+    [Space]
+    [SerializeField] protected int m_damage = 1;
 
     [Header("Events:")]
     [SerializeField] protected UnityEvent m_onTurnStart;
+    [Space]
     [SerializeField] protected UnityEvent<int> m_onMove;
+    [SerializeField] protected UnityEvent<int> m_onPerformAction;
+    [Space]
     [SerializeField] protected UnityEvent<int, int> m_onDamage;
     [SerializeField] protected UnityEvent m_onDeath;
 
     //  Run-time:
-    protected int m_currentMovement = 10;
-    protected int m_currentHealth   = 3;
-    protected int m_currentActions  = 1;
+    [HideInInspector] public int currentMovement = 10;
+    [HideInInspector] public int currentHealth   = 3;
+    [HideInInspector] public int currentActions  = 1;
 
     //  Events:
     protected EventWrapper m_onTurnEnd = new();
@@ -40,14 +45,22 @@ public abstract class Entity : MonoBehaviour, ITurnReceiver, ITileOccupier
         m_dungeon = FindObjectOfType<DungeonManager>();
     }
 
-    public abstract void OnTurnStart();
+    public virtual void OnTurnStart()
+    {
+        Debug.Log($"{gameObject.name}'s Turn!!!");
+
+        currentMovement = m_movementPerTurn;
+        currentActions  = m_actionsPerTurn;
+
+        m_onTurnStart.Invoke();
+    }
 
     public abstract void DuringTurn();
 
     public bool Move(Vector2Int _direction, out MovementCallBack _callback)
     {
         //  Immediately disallow movement if no stamina is left.
-        if (m_currentMovement == 0)
+        if (currentMovement == 0)
         {
             _callback = new MovementCallBack
             {
@@ -68,9 +81,22 @@ public abstract class Entity : MonoBehaviour, ITurnReceiver, ITileOccupier
         if (!m_dungeon.RequestMoveTo(movementRequest, out _callback)) return false;
 
         //  If it succeeds, take neccesary precautions.
-        m_currentMovement--;
-        m_onMove.Invoke(m_currentMovement);
+        currentMovement--;
+        m_onMove.Invoke(currentMovement);
         return true;
+    }
+
+    public void Move(Vector2Int _direction)
+    {
+        Move(_direction, out MovementCallBack _callback);
+    }
+
+    public void Attack(Vector2Int _coordinates)
+    {
+        m_dungeon.AttackAt(_coordinates, m_damage);
+
+        currentActions--;
+        m_onPerformAction.Invoke(currentActions);
     }
 
     public void Snap()
@@ -83,10 +109,10 @@ public abstract class Entity : MonoBehaviour, ITurnReceiver, ITileOccupier
     {
         Debug.Log("Ouch");
 
-        m_currentHealth -= _damage;
+        currentHealth -= _damage;
 
-        if (m_currentHealth < 0) m_currentHealth = 0;
-        m_onDamage.Invoke(m_currentHealth, m_maxHealth);
-        if (m_currentHealth == 0) m_onDeath.Invoke();
+        if (currentHealth < 0) currentHealth = 0;
+        m_onDamage.Invoke(currentHealth, m_maxHealth);
+        if (currentHealth == 0) m_onDeath.Invoke();
     }
 }

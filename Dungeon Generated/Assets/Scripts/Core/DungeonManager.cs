@@ -82,6 +82,17 @@ public class DungeonManager : MonoBehaviour
         return m_navigation.RequestMoveTo(_request, out _callback);
     }
 
+    public void AttackAt(Vector2Int _coordinates, int _damage)
+    {
+        if (!m_navigation.TargetInBounds(_coordinates)) return;
+
+        var tile = m_navigation.tileMap[_coordinates];
+
+        if (tile == null) return;
+        if (tile.occupation == null) return;
+        tile.occupation.Damage(_damage);
+    }
+
     public bool TargetInBounds(Vector2Int _coordinates)
     {
         return m_navigation.TargetInBounds(_coordinates);
