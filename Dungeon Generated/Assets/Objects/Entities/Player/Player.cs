@@ -29,10 +29,9 @@ public class Player : Entity
         m_stateMachine.Tick();
     }
 
-    public void EndTurn()
+    public override void EndTurn()
     {
-        onTurnEnd.Invoke();
+        base.EndTurn();
         m_stateMachine.OnSwitch(typeof(Moving));
-        currentMovement = m_movementPerTurn;
     }
 }

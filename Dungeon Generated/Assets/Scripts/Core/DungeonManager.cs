@@ -60,7 +60,7 @@ public class DungeonManager : MonoBehaviour
         {
             m_currentTurnReceiver = m_turnReceivers.Dequeue();
             m_currentTurnReceiver.OnTurnStart();
-            m_currentTurnReceiver.onTurnEnd.Subscribe(OnTurnEnd);
+            m_currentTurnReceiver.endTurnCallback.Subscribe(OnTurnEnd);
         }
         else
         {
@@ -72,7 +72,7 @@ public class DungeonManager : MonoBehaviour
     {
         m_turnReceivers.Enqueue(m_currentTurnReceiver);
 
-        m_currentTurnReceiver.onTurnEnd.Unsubscribe(OnTurnEnd);
+        m_currentTurnReceiver.endTurnCallback.Unsubscribe(OnTurnEnd);
         m_currentTurnReceiver = null;
 
     }

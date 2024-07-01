@@ -31,7 +31,7 @@ public class Slasher : Entity
         switch (m_state)
         {
             case State.IDLE:
-                onTurnEnd.Invoke();
+                EndTurn();
                 break;
 
             case State.COMBAT:
@@ -53,13 +53,13 @@ public class Slasher : Entity
                     }
 
                     currentMovement = m_movementPerTurn;
-                    onTurnEnd.Invoke();
+                    EndTurn();
                 }
 
                 if (currentMovement <= 0)
                 {
                     currentMovement = m_movementPerTurn;
-                    onTurnEnd.Invoke();
+                    EndTurn();
                 }
                 break;
         }

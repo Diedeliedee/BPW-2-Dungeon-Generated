@@ -2,7 +2,7 @@
 
 public interface ITurnReceiver
 {
-    public EventWrapper onTurnEnd { get; }
+    public EventWrapper endTurnCallback { get; }
 
     public void OnTurnStart();
 

@@ -19,6 +19,8 @@ public abstract class Entity : MonoBehaviour, ITurnReceiver, ITileOccupier
     [Space]
     [SerializeField] protected UnityEvent<int, int> m_onDamage;
     [SerializeField] protected UnityEvent m_onDeath;
+    [Space]
+    [SerializeField] protected UnityEvent m_onTurnEnd;
 
     //  Run-time:
     [HideInInspector] public int currentMovement = 10;
@@ -26,7 +28,7 @@ public abstract class Entity : MonoBehaviour, ITurnReceiver, ITileOccupier
     [HideInInspector] public int currentActions  = 1;
 
     //  Events:
-    protected EventWrapper m_onTurnEnd = new();
+    protected EventWrapper m_endTurnCallback = new();
 
     //  Reference:
     protected DungeonManager m_dungeon;
@@ -38,7 +40,7 @@ public abstract class Entity : MonoBehaviour, ITurnReceiver, ITileOccupier
         set => transform.position = new Vector3(value.x, value.y, transform.position.z);
     }
 
-    public EventWrapper onTurnEnd => m_onTurnEnd;
+    public EventWrapper endTurnCallback => m_endTurnCallback;
 
     protected virtual void Awake()
     {
@@ -97,6 +99,12 @@ public abstract class Entity : MonoBehaviour, ITurnReceiver, ITileOccupier
 
         currentActions--;
         m_onPerformAction.Invoke(currentActions);
+    }
+
+    public virtual void EndTurn()
+    {
+        m_endTurnCallback.Invoke();
+        m_onTurnEnd.Invoke();
     }
 
     public void Snap()
