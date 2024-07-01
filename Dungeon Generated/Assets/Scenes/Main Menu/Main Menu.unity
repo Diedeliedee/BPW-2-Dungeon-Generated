@@ -444,7 +444,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: -150}
-  m_SizeDelta: {x: 960, y: 300}
+  m_SizeDelta: {x: 1500, y: 300}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &567944410
 MonoBehaviour:
@@ -466,7 +466,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Dungeon Crawler Name
+  m_text: Randomly Generated Dungeon Crawler!!!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a3e3c10683534254ca47a83cd82e5fe4, type: 2}
   m_sharedMaterial: {fileID: 7602944832503870807, guid: a3e3c10683534254ca47a83cd82e5fe4, type: 2}

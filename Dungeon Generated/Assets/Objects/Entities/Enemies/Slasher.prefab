@@ -415,5 +415,5 @@ MonoBehaviour:
   currentMovement: 10
   currentHealth: 3
   currentActions: 1
-  m_aggroDistance: 3
+  m_aggroDistance: 5
   m_choiceTime: 0.5
