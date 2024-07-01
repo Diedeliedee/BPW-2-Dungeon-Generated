@@ -397,13 +397,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b25fe28b5d2f8843ab525488d3b6df1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_maxHealth: 3
+  m_maxHealth: 5
   m_movementPerTurn: 10
   m_actionsPerTurn: 1
+  m_damage: 1
   m_onTurnStart:
     m_PersistentCalls:
       m_Calls: []
   m_onMove:
+    m_PersistentCalls:
+      m_Calls: []
+  m_onPerformAction:
     m_PersistentCalls:
       m_Calls: []
   m_onDamage:
@@ -412,3 +416,9 @@ MonoBehaviour:
   m_onDeath:
     m_PersistentCalls:
       m_Calls: []
+  m_onTurnEnd:
+    m_PersistentCalls:
+      m_Calls: []
+  currentMovement: 10
+  currentHealth: 3
+  currentActions: 1

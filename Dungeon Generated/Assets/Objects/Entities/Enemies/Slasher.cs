@@ -49,16 +49,14 @@ public class Slasher : Entity
                     if (_callback.condition == MovementCallBack.Condition.OCCUPIED && _callback.targetTile.occupation is Player _player)
                     {
                         //  Damage the player.
-                        _player.Damage(5);
+                        _player.Damage(m_damage);
                     }
 
-                    currentMovement = m_movementPerTurn;
                     EndTurn();
                 }
 
                 if (currentMovement <= 0)
                 {
-                    currentMovement = m_movementPerTurn;
                     EndTurn();
                 }
                 break;

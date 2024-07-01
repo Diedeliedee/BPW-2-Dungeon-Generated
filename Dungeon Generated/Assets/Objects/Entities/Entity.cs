@@ -23,9 +23,9 @@ public abstract class Entity : MonoBehaviour, ITurnReceiver, ITileOccupier
     [SerializeField] protected UnityEvent m_onTurnEnd;
 
     //  Run-time:
-    [HideInInspector] public int currentMovement = 10;
-    [HideInInspector] public int currentHealth   = 3;
-    [HideInInspector] public int currentActions  = 1;
+    [HideInInspector] public int currentMovement;
+    [HideInInspector] public int currentHealth;
+    [HideInInspector] public int currentActions;
 
     //  Events:
     protected EventWrapper m_endTurnCallback = new();
@@ -45,6 +45,10 @@ public abstract class Entity : MonoBehaviour, ITurnReceiver, ITileOccupier
     protected virtual void Awake()
     {
         m_dungeon = FindObjectOfType<DungeonManager>();
+
+        currentMovement = m_movementPerTurn;
+        currentHealth   = m_maxHealth;
+        currentActions  = m_actionsPerTurn;
     }
 
     public virtual void OnTurnStart()
